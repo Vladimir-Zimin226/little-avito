@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
 @Controller
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+//@CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("${openapi.aPIDocumentation.base-path:}")
 public class AdsApiController implements AdsApi {
 
