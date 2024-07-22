@@ -36,7 +36,7 @@ public class LoginApiController implements LoginApi {
     }
 
     @Operation(
-            operationId = "loginDto",
+            operationId = "login",
             summary = "Авторизация пользователя",
             tags = {"Авторизация"},
             responses = {
@@ -46,7 +46,7 @@ public class LoginApiController implements LoginApi {
     )
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/loginDto",
+            value = "/login",
             consumes = {"application/json"}
     )
     @Override
