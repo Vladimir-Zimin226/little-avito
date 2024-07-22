@@ -36,7 +36,7 @@ public class RegisterApiController implements RegisterApi {
     }
 
     @Operation(
-            operationId = "registerDto",
+            operationId = "register",
             summary = "Регистрация пользователя",
             tags = {"Регистрация"},
             responses = {
@@ -46,7 +46,7 @@ public class RegisterApiController implements RegisterApi {
     )
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/registerDto",
+            value = "/register",
             consumes = {"application/json"}
     )
     @Override
