@@ -1,13 +1,16 @@
-package ru.skypro.homework.controller.api;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -15,13 +18,14 @@ import ru.skypro.homework.dto.RegisterDto;
 
 import java.util.Optional;
 import javax.annotation.Generated;
+import javax.validation.Valid;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
 @Controller
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("${openapi.aPIDocumentation.base-path:}")
-public class RegisterApiController implements RegisterApi {
+public class RegisterApiController{
 
     private final NativeWebRequest request;
 
@@ -30,9 +34,8 @@ public class RegisterApiController implements RegisterApi {
         this.request = request;
     }
 
-    @Override
     public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
+        return Optional.empty();
     }
 
     @Operation(
@@ -49,8 +52,10 @@ public class RegisterApiController implements RegisterApi {
             value = "/register",
             consumes = {"application/json"}
     )
-    @Override
-    public ResponseEntity<Void> register(RegisterDto registerDto) {
-        return RegisterApi.super.register(registerDto);
+    public ResponseEntity<Void> register(
+            @Parameter(name = "RegisterDto", description = "") @Valid @RequestBody(required = false) RegisterDto registerDto
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 }

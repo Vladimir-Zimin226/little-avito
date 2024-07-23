@@ -1,17 +1,18 @@
-package ru.skypro.homework.controller.api;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
@@ -20,13 +21,14 @@ import ru.skypro.homework.dto.UserDto;
 
 import java.util.Optional;
 import javax.annotation.Generated;
+import javax.validation.Valid;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
 @Controller
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("${openapi.aPIDocumentation.base-path:}")
-public class UsersApiController implements UsersApi {
+public class UsersApiController{
 
     private final NativeWebRequest request;
 
@@ -35,9 +37,8 @@ public class UsersApiController implements UsersApi {
         this.request = request;
     }
 
-    @Override
     public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
+        return Optional.empty();
     }
 
     @Operation(
@@ -56,9 +57,18 @@ public class UsersApiController implements UsersApi {
             value = "/users/me",
             produces = { "application/json" }
     )
-    @Override
     public ResponseEntity<UserDto> getUser() {
-        return UsersApi.super.getUser();
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"image\" : \"image\", \"role\" : \"USER\", \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -76,9 +86,11 @@ public class UsersApiController implements UsersApi {
             value = "/users/set_password",
             consumes = { "application/json" }
     )
-    @Override
-    public ResponseEntity<Void> setPassword(NewPasswordDto newPasswordDto) {
-        return UsersApi.super.setPassword(newPasswordDto);
+    public ResponseEntity<Void> setPassword(
+            @Parameter(name = "NewPasswordDto", description = "") @Valid @RequestBody(required = false) NewPasswordDto newPasswordDto
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -98,9 +110,20 @@ public class UsersApiController implements UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" }
     )
-    @Override
-    public ResponseEntity<UpdateUserDto> updateUser(UpdateUserDto updateUserDto) {
-        return UsersApi.super.updateUser(updateUserDto);
+    public ResponseEntity<UpdateUserDto> updateUser(
+            @Parameter(name = "UpdateUserDto", description = "") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"phone\" : \"phone\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -117,8 +140,10 @@ public class UsersApiController implements UsersApi {
             value = "/users/me/image",
             consumes = { "multipart/form-data" }
     )
-    @Override
-    public ResponseEntity<Void> updateUserImage(MultipartFile image) {
-        return UsersApi.super.updateUserImage(image);
+    public ResponseEntity<Void> updateUserImage(
+            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 }
