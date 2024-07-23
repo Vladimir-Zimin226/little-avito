@@ -1,4 +1,4 @@
-package ru.skypro.homework.controller.api;
+package ru.skypro.homework.controller;
 
 import org.springframework.web.context.request.NativeWebRequest;
 

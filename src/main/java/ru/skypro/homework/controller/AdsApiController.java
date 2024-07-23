@@ -1,17 +1,18 @@
-package ru.skypro.homework.controller.api;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -19,13 +20,14 @@ import ru.skypro.homework.dto.*;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
+import javax.validation.Valid;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
 @Controller
 @Slf4j
-//@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("${openapi.aPIDocumentation.base-path:}")
-public class AdsApiController implements AdsApi {
+public class AdsApiController {
 
     private final NativeWebRequest request;
 
@@ -34,10 +36,8 @@ public class AdsApiController implements AdsApi {
         this.request = request;
     }
 
-
-    @Override
     public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
+        return Optional.empty();
     }
 
     @Operation(
@@ -57,52 +57,21 @@ public class AdsApiController implements AdsApi {
             produces = {"application/json"},
             consumes = {"multipart/form-data"}
     )
-    @Override
-    public ResponseEntity<AdDto> addAd(CreateOrUpdateAdDto properties, MultipartFile image) {
-        return AdsApi.super.addAd(properties, image);
-    }
-
-    @Operation(
-            operationId = "addComment",
-            summary = "Добавление комментария к объявлению",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentDto.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
+    public ResponseEntity<AdDto> addAd(
+            @Parameter(name = "properties", description = "", required = true) @Valid @RequestParam(value = "properties", required = true) CreateOrUpdateAdDto properties,
+            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
             }
-    )
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/ads/{id}/comments",
-            produces = {"application/json"},
-            consumes = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<CommentDto> addComment(Integer id, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return AdsApi.super.addComment(id, createOrUpdateCommentDto);
-    }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-    @Operation(
-            operationId = "deleteComment",
-            summary = "Удаление комментария",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
-    @RequestMapping(
-            method = RequestMethod.DELETE,
-            value = "/ads/{adId}/comments/{commentId}"
-    )
-    @Override
-    public ResponseEntity<Void> deleteComment(Integer adId, Integer commentId) {
-        return AdsApi.super.deleteComment(adId, commentId);
     }
 
     @Operation(
@@ -122,9 +91,20 @@ public class AdsApiController implements AdsApi {
             value = "/ads/{id}",
             produces = {"application/json"}
     )
-    @Override
-    public ResponseEntity<ExtendedAdDto> getAds(Integer id) {
-        return AdsApi.super.getAds(id);
+    public ResponseEntity<ExtendedAdDto> getAds(
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"image\" : \"image\", \"authorLastName\" : \"authorLastName\", \"authorFirstName\" : \"authorFirstName\", \"phone\" : \"phone\", \"price\" : 6, \"description\" : \"description\", \"pk\" : 0, \"title\" : \"title\", \"email\" : \"email\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -143,9 +123,18 @@ public class AdsApiController implements AdsApi {
             value = "/ads/me",
             produces = {"application/json"}
     )
-    @Override
     public ResponseEntity<AdsDto> getAdsMe() {
-        return AdsApi.super.getAdsMe();
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"count\" : 0, \"results\" : [ { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }, { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -163,32 +152,20 @@ public class AdsApiController implements AdsApi {
             value = "/ads",
             produces = {"application/json"}
     )
-    @Override
     public ResponseEntity<AdsDto> getAllAds() {
-        return AdsApi.super.getAllAds();
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"count\" : 0, \"results\" : [ { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }, { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" } ] }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
-    @Operation(
-            operationId = "getComments",
-            summary = "Получение комментариев объявления",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentsDto.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/ads/{id}/comments",
-            produces = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<CommentsDto> getComments(Integer id) {
-        return AdsApi.super.getComments(id);
-    }
 
     @Operation(
             operationId = "removeAd",
@@ -205,9 +182,11 @@ public class AdsApiController implements AdsApi {
             method = RequestMethod.DELETE,
             value = "/ads/{id}"
     )
-    @Override
-    public ResponseEntity<Void> removeAd(Integer id) {
-        return AdsApi.super.removeAd(id);
+    public ResponseEntity<Void> removeAd(
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @Operation(
@@ -229,34 +208,21 @@ public class AdsApiController implements AdsApi {
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    @Override
-    public ResponseEntity<AdDto> updateAds(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
-        return AdsApi.super.updateAds(id, createOrUpdateAdDto);
-    }
-
-
-    @Operation(
-            operationId = "updateComment",
-            summary = "Обновление комментария",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentDto.class))
-                    }),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
+    public ResponseEntity<AdDto> updateAds(
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "CreateOrUpdateAdDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateAdDto createOrUpdateAdDto
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
             }
-    )
-    @RequestMapping(
-            method = RequestMethod.PATCH,
-            value = "/ads/{adId}/comments/{commentId}",
-            produces = {"application/json"},
-            consumes = {"application/json"}
-    )
-    @Override
-    public ResponseEntity<CommentDto> updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        return AdsApi.super.updateComment(adId, commentId, createOrUpdateCommentDto);
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
 
@@ -279,9 +245,21 @@ public class AdsApiController implements AdsApi {
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"}
     )
-    @Override
-    public ResponseEntity<List<byte[]>> updateImage(Integer id, MultipartFile image) {
-        return AdsApi.super.updateImage(id, image);
+    public ResponseEntity<List<byte[]>> updateImage(
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf(""))) {
+                    String exampleString = "";
+                    ApiUtil.setExampleResponse(request, "", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
 }
