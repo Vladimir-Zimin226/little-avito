@@ -24,8 +24,6 @@ public class Ad {
 
     private String description;
 
-    private String imageUrl;
-
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;
