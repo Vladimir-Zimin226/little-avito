@@ -28,7 +28,7 @@ public interface UserMapper {
 
 
     @Mapping(source = "pk", target = "id", ignore = true)
-    @Mapping(target = "role", defaultValue = "USER")
+    @Mapping(source = "roleDto", target = "role", defaultValue = "USER")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "firstName", target = "firstName")
     @Mapping(source = "lastName", target = "lastName")
@@ -38,9 +38,9 @@ public interface UserMapper {
 
 
     @Mapping(source = "username", target = "email")
-    RegisterDto registerDtoToUser(User user);
+    User registerDtoToUser(RegisterDto registerDto);
 
-    @Mapping(source = "email", target = "username")
+    @Mapping(source = "username", target = "email")
     User loginDtoToUser(LoginDto loginDto);
 
     @Mapping(source = "firstName", target = "firstName")
@@ -48,6 +48,13 @@ public interface UserMapper {
     @Mapping(source = "phone", target = "phone")
     User updateUserDtoToUser(UpdateUserDto updateUserDto);
 
+    default String map(byte[] image) {
+        return image != null ? new String(image) : null;
+    }
+
+    default byte[] map(String image) {
+        return image != null ? image.getBytes() : null;
+    }
 
 
 
