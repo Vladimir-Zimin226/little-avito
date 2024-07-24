@@ -18,5 +18,7 @@ public class UserDto {
 
     private String image;
 
+    private RoleDto roleDto;
+
 }
 
