@@ -55,13 +55,4 @@ public interface UserMapper {
     default byte[] map(String image) {
         return image != null ? image.getBytes() : null;
     }
-
-
-
-
-
-
-
-
-
 }
