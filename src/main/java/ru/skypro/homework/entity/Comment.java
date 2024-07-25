@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -22,7 +21,7 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
 
-    private LocalDate createdAt;
+    private Long createdAt;
 
     private String text;
 
