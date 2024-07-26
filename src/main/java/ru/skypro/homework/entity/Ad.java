@@ -6,22 +6,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ad_table")
+@Table(name = "ads")
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer price;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
+    @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "description", nullable = false)
     private String description;
 
     @ManyToOne
