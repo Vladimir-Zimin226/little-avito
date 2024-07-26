@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class UserDto {
 
-    private Integer id;
+    private Integer pk;
 
     private String email;
 
@@ -15,6 +15,10 @@ public class UserDto {
     private String lastName;
 
     private String phone;
+
+    private String image;
+
+    private RoleDto roleDto;
 
 }
 

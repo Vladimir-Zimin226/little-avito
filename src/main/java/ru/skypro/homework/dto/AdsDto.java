@@ -10,8 +10,7 @@ public class AdsDto {
     private Integer count;
 
     @Valid
-    private List<AdDto> results = null;
-
+    private List<AdDto> results;
 
 }
 

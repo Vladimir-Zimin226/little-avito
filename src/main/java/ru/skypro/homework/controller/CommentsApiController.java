@@ -9,17 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 
+import javax.annotation.Generated;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Controller
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
+@RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("${openapi.aPIDocumentation.base-path:}")
@@ -30,6 +31,7 @@ public class CommentsApiController {
     public CommentsApiController(NativeWebRequest request) {
         this.request = request;
     }
+
 
     public Optional<NativeWebRequest> getRequest() {
         return Optional.ofNullable(request);
@@ -58,8 +60,6 @@ public class CommentsApiController {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : 1, \"authorFirstName\" : \"authorFirstName\", \"author\" : 6, \"authorImage\" : \"authorImage\", \"pk\" : 5, \"text\" : \"text\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
             }
@@ -108,8 +108,6 @@ public class CommentsApiController {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"count\" : 0, \"results\" : [ { \"createdAt\" : 1, \"authorFirstName\" : \"authorFirstName\", \"author\" : 6, \"authorImage\" : \"authorImage\", \"pk\" : 5, \"text\" : \"text\" }, { \"createdAt\" : 1, \"authorFirstName\" : \"authorFirstName\", \"author\" : 6, \"authorImage\" : \"authorImage\", \"pk\" : 5, \"text\" : \"text\" } ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
             }
@@ -142,8 +140,6 @@ public class CommentsApiController {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"createdAt\" : 1, \"authorFirstName\" : \"authorFirstName\", \"author\" : 6, \"authorImage\" : \"authorImage\", \"pk\" : 5, \"text\" : \"text\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }
             }

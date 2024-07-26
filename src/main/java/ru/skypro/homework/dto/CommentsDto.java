@@ -11,7 +11,7 @@ public class CommentsDto {
     private Integer count;
 
     @Valid
-    private List<CommentDto> results = null;
+    private List<CommentDto> results;
 
 }
 
