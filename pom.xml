@@ -80,15 +80,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
-      <dependency>
-          <groupId>org.xmlunit</groupId>
-          <artifactId>xmlunit-core</artifactId>
-      </dependency>
-      <!-- MapStruct Core -->
+           <!-- MapStruct Core -->
       <dependency>
         <groupId>org.mapstruct</groupId>
         <artifactId>mapstruct</artifactId>
-        <version>1.5.3.Final</version> <!-- Используйте последнюю стабильную версию -->
+        <version>1.5.5.Final</version> <!-- Используйте последнюю стабильную версию -->
       </dependency>
 
       <!-- MapStruct Processor (для компиляции) -->
@@ -103,7 +99,6 @@
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

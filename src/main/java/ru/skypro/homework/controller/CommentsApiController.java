@@ -19,7 +19,6 @@ import javax.annotation.Generated;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-07-21T12:05:35.370405200+05:00[Asia/Tashkent]")
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")

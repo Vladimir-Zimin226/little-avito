@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "comment_table")
+@Table(name = "comments")
 public class Comment {
 
     @Id
@@ -21,8 +22,10 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
 
-    private Long createdAt;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
+    @Column(name = "text", nullable = false)
     private String text;
 
     @ManyToOne
