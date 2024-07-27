@@ -1,17 +1,16 @@
 package ru.skypro.homework.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
 @Entity
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "ads")
 public class Ad {

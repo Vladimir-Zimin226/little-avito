@@ -1,42 +1,19 @@
-package ru.skypro.homework.controller;
-
+package ru.skypro.homework.controller.interfaces;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Generated;
 import javax.validation.Valid;
+import java.util.List;
 
-@RestController
-@Slf4j
-@CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("${openapi.aPIDocumentation.base-path:}")
-public class AdsApiController {
-
-    private final NativeWebRequest request;
-
-    @Autowired
-    public AdsApiController(NativeWebRequest request) {
-        this.request = request;
-    }
-
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
+public interface AdsApi {
 
     @Operation(
             operationId = "addAd",
@@ -49,27 +26,15 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "/ads",
+    @PostMapping(
+            value = "",
             produces = {"application/json"},
             consumes = {"multipart/form-data"}
     )
-    public ResponseEntity<AdDto> addAd(
+    ResponseEntity<AdDto> addAd(
             @Parameter(name = "properties", description = "", required = true) @Valid @RequestParam(value = "properties", required = true) CreateOrUpdateAdDto properties,
             @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
     @Operation(
             operationId = "getAds",
@@ -83,25 +48,13 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "404", description = "Not found")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/ads/{id}",
+    @GetMapping(
+            value = "/{id}",
             produces = {"application/json"}
     )
-    public ResponseEntity<ExtendedAdDto> getAds(
+    ResponseEntity<ExtendedAdDto> getAds(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"image\" : \"image\", \"authorLastName\" : \"authorLastName\", \"authorFirstName\" : \"authorFirstName\", \"phone\" : \"phone\", \"price\" : 6, \"description\" : \"description\", \"pk\" : 0, \"title\" : \"title\", \"email\" : \"email\" }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
     @Operation(
             operationId = "getAdsMe",
@@ -114,23 +67,11 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/ads/me",
+    @GetMapping(
+            value = "/me",
             produces = {"application/json"}
     )
-    public ResponseEntity<AdsDto> getAdsMe() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"count\" : 0, \"results\" : [ { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }, { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" } ] }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    ResponseEntity<AdsDto> getAdsMe();
 
     @Operation(
             operationId = "getAllAds",
@@ -142,24 +83,11 @@ public class AdsApiController {
                     })
             }
     )
-    @RequestMapping(
-            method = RequestMethod.GET,
-            value = "/ads",
+    @GetMapping(
+            value = "",
             produces = {"application/json"}
     )
-    public ResponseEntity<AdsDto> getAllAds() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"count\" : 0, \"results\" : [ { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }, { \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" } ] }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
+    ResponseEntity<AdsDto> getAllAds();
 
     @Operation(
             operationId = "removeAd",
@@ -172,16 +100,12 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "404", description = "Not found")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.DELETE,
-            value = "/ads/{id}"
+    @DeleteMapping(
+            value = "/{id}"
     )
-    public ResponseEntity<Void> removeAd(
+    ResponseEntity<Void> removeAd(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
     @Operation(
             operationId = "updateAds",
@@ -196,28 +120,15 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "404", description = "Not found")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.PATCH,
-            value = "/ads/{id}",
+    @PatchMapping(
+            value = "/{id}",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<AdDto> updateAds(
+    ResponseEntity<AdDto> updateAds(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
             @Parameter(name = "CreateOrUpdateAdDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateAdDto createOrUpdateAdDto
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"image\" : \"image\", \"author\" : 6, \"price\" : 5, \"pk\" : 1, \"title\" : \"title\" }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
+    );
 
     @Operation(
             operationId = "updateImage",
@@ -232,26 +143,13 @@ public class AdsApiController {
                     @ApiResponse(responseCode = "404", description = "Not found")
             }
     )
-    @RequestMapping(
-            method = RequestMethod.PATCH,
-            value = "/ads/{id}/image",
+    @PatchMapping(
+            value = "/{id}/image",
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"}
     )
-    public ResponseEntity<List<byte[]>> updateImage(
+    ResponseEntity<List<byte[]>> updateImage(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf(""))) {
-                    String exampleString = "";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
+            @Parameter(name = "image", required = true) @RequestPart(value = "image", required = true) MultipartFile image
+    );
 }

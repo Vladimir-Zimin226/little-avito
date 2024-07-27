@@ -1,17 +1,16 @@
 package ru.skypro.homework.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
 @Entity
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "users")
 public class User {
 

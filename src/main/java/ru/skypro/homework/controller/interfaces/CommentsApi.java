@@ -1,40 +1,19 @@
-package ru.skypro.homework.controller;
+package ru.skypro.homework.controller.interfaces;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 
-import javax.annotation.Generated;
 import javax.validation.Valid;
-import java.util.Optional;
 
-@RestController
-@Slf4j
-@CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("${openapi.aPIDocumentation.base-path:}")
-public class CommentsApiController {
-
-    private final NativeWebRequest request;
-
-    public CommentsApiController(NativeWebRequest request) {
-        this.request = request;
-    }
-
-
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
-    }
+public interface CommentsApi {
 
     @Operation(
             operationId = "addComment",
@@ -49,22 +28,14 @@ public class CommentsApiController {
             }
     )
     @PostMapping(
-            value = "/ads/{id}/comments",
+            value = "/{id}/comments",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<CommentDto> addComment(
+    ResponseEntity<CommentDto> addComment(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto
+    );
 
     @Operation(
             operationId = "deleteComment",
@@ -78,13 +49,12 @@ public class CommentsApiController {
             }
     )
     @DeleteMapping(
-            value = "/ads/{adId}/comments/{commentId}"
+            value = "/{adId}/comments/{commentId}"
     )
-    public ResponseEntity<Void> deleteComment(
+    ResponseEntity<Void> deleteComment(
             @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
-            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId
+    );
 
     @Operation(
             operationId = "getComments",
@@ -99,20 +69,12 @@ public class CommentsApiController {
             }
     )
     @GetMapping(
-            value = "/ads/{id}/comments",
+            value = "/{id}/comments",
             produces = {"application/json"}
     )
-    public ResponseEntity<CommentsDto> getComments(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+    ResponseEntity<CommentsDto> getComments(
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
+    );
 
     @Operation(
             operationId = "updateComment",
@@ -128,21 +90,13 @@ public class CommentsApiController {
             }
     )
     @PatchMapping(
-            value = "/ads/{adId}/comments/{commentId}",
+            value = "/{adId}/comments/{commentId}",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<CommentDto> updateComment(
+    ResponseEntity<CommentDto> updateComment(
             @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
             @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId,
-            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto
+    );
 }
