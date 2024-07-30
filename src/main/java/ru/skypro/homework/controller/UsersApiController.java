@@ -6,34 +6,34 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.exceptions.WrongCurrentPasswordException;
+import ru.skypro.homework.service.UserService;
 
 import java.util.Optional;
-import javax.annotation.Generated;
 import javax.validation.Valid;
 
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("${openapi.aPIDocumentation.base-path:}")
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UsersApiController{
 
     private final NativeWebRequest request;
 
-    @Autowired
-    public UsersApiController(NativeWebRequest request) {
-        this.request = request;
-    }
+    private final UserService userService;
 
     public Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
@@ -74,20 +74,21 @@ public class UsersApiController{
             tags = { "Пользователи" },
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
                     @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/users/set_password",
+            value = "/set_password",
             consumes = { "application/json" }
     )
-    public ResponseEntity<Void> setPassword(
-            @Parameter(name = "NewPasswordDto", description = "") @Valid @RequestBody(required = false) NewPasswordDto newPasswordDto
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
+    public ResponseEntity<NewPasswordDto> setPassword(@Valid @RequestBody NewPasswordDto dto, Authentication authentication) {
+        try {
+            userService.updatePassword(dto, authentication.getName());
+        } catch (WrongCurrentPasswordException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dto);
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(
@@ -103,23 +104,12 @@ public class UsersApiController{
     )
     @RequestMapping(
             method = RequestMethod.PATCH,
-            value = "/users/me",
+            value = "/me",
             produces = { "application/json" },
             consumes = { "application/json" }
     )
-    public ResponseEntity<UpdateUserDto> updateUser(
-            @Parameter(name = "UpdateUserDto", description = "") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"phone\" : \"phone\" }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
+    public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto dto, Authentication authentication) {
+        return ResponseEntity.ok(userService.updateInformationAboutUser(dto, authentication.getName()));
     }
 
     @Operation(
