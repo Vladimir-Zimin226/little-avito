@@ -49,9 +49,7 @@ public interface UsersApi {
             value = "/set_password",
             consumes = { "application/json" }
     )
-    ResponseEntity<Void> setPassword(
-            @Parameter(name = "NewPasswordDto", description = "") @Valid NewPasswordDto newPasswordDto
-    );
+    ResponseEntity<Void> setPassword(@Parameter(name = "NewPasswordDto", description = "") @Valid NewPasswordDto newPasswordDto);
 
 
     @Operation(
@@ -70,9 +68,7 @@ public interface UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" }
     )
-    ResponseEntity<UpdateUserDto> updateUser(
-            @Parameter(name = "UpdateUserDto", description = "") @Valid UpdateUserDto updateUserDto
-    );
+    ResponseEntity<UpdateUserDto> updateUser(@Parameter(name = "UpdateUserDto", description = "") @Valid UpdateUserDto updateUserDto);
 
 
     @Operation(
@@ -88,7 +84,5 @@ public interface UsersApi {
             value = "/me/image",
             consumes = { "multipart/form-data" }
     )
-    ResponseEntity<Void> updateUserImage(
-            @Parameter(name = "image", description = "", required = true) MultipartFile image
-    );
+    ResponseEntity<Void> updateUserImage(@Parameter(name = "image", description = "", required = true) MultipartFile image);
 }

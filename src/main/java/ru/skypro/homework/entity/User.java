@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -29,6 +29,9 @@ public class User {
 
     @Column(name = "phone", nullable = false)
     private String phone;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     @OneToOne
     @JoinColumn(name = "image_id")

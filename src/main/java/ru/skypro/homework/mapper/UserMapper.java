@@ -3,10 +3,7 @@ package ru.skypro.homework.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import ru.skypro.homework.dto.LoginDto;
-import ru.skypro.homework.dto.RegisterDto;
-import ru.skypro.homework.dto.UpdateUserDto;
-import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.User;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -27,6 +24,8 @@ public interface UserMapper {
     User fromLoginDto(LoginDto loginDto);
 
     User createUserFromDto(UpdateUserDto updateUserDto);
+
+    SecurityDto toSecurityDto(User user);
 
     default String map(byte[] image) {
         return image != null ? new String(image) : null;
