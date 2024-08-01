@@ -65,7 +65,7 @@ public class AdsApiController implements AdsApi {
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAd(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id, Authentication authentication) {
@@ -74,7 +74,7 @@ public class AdsApiController implements AdsApi {
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}",
             produces = {"application/json"},
             consumes = {"application/json"})
@@ -85,7 +85,7 @@ public class AdsApiController implements AdsApi {
         return ResponseEntity.ok(adService.updateAd(createOrUpdateAdDto, authentication, Long.valueOf(id)));
     }
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}/image",
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"})

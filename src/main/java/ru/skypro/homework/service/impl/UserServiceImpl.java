@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapper.UserMapper;
@@ -48,21 +50,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUserDto(UpdateUserDto updateUserDto, Authentication authentication) {
         log.info("Updating user information for user:{}", authentication.getName());
+        log.info("Request to update user");
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        mapper.createUserFromDto(updateUserDto);
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setPhone(updateUserDto.getPhone());
         userRepository.save(user);
         return mapper.toUserDto(user);
     }
 
+
+    @Transactional
     @Override
-    public void updateUserImage(MultipartFile file, Authentication authentication) throws IOException {
-        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
+    public void updateUserImage(MultipartFile file, Authentication authentication){
+        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName())
+                .orElseThrow(UserNotFoundException::new);
+
+        log.info("User found: {}", user);
+
         try {
-            user.setUserPhoto(imageService.downloadImage(file));
+            Image image = imageService.downloadImage(file);
+            user.setUserPhoto(image);
+            log.info("Image downloaded and set for user: {}", user.getId());
+            userRepository.save(user);
+            log.info("User updated successfully: {}", user.getId());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Error occurred while updating user image", e);
+            throw new RuntimeException("Failed to update user image", e);
         }
-        userRepository.save(user);
-        mapper.toUserDto(user);
+
     }
+
 }

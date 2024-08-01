@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
-import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exception.AdNotFoundException;
@@ -21,9 +21,6 @@ import ru.skypro.homework.service.ImageService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.BufferUnderflowException;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +53,8 @@ public class AdServiceImpl implements AdService {
         }
         ad.setAdImage(image);
         ad.setAuthor(user);
-        return adMapper.toAdDto(ad);
+        Ad savedAd = adRepository.save(ad);
+        return adMapper.toAdDto(savedAd);
     }
 
     @Override
@@ -82,10 +80,11 @@ public class AdServiceImpl implements AdService {
         return adsDto;
     }
 
+    @Transactional
     @Override
     public void removeAd(Long id, Authentication authentication) {
         log.info("Removing ad by its id, ows to user: {}", authentication.getName());
-        Ad ad = adRepository.findById(id).orElseThrow(RuntimeException::new);
+        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         commentService.deleteAllByAdId(Math.toIntExact(id));
         adRepository.deleteById(id);
         imageService.deleteImage(ad.getAdImage().getId());
@@ -106,6 +105,7 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(ad);
     }
 
+    @Transactional
     @Override
     public byte[] updateImage(MultipartFile file, Authentication authentication, Long id) throws IOException {
         log.info("Updating ad image by its id, ows to user: {}", authentication.getName());
@@ -119,6 +119,11 @@ public class AdServiceImpl implements AdService {
             throw new RuntimeException("Unable to download image");
         }
         adRepository.save(updateAdImage);
-        return file.getBytes();
+        return new byte[0];
+    }
+
+    @Override
+    public Ad getAd(Long id) {
+        return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
 }

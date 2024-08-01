@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
@@ -50,12 +51,13 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toCommentDto(savedComment);
     }
 
+    @Transactional
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
         log.info("Deleting the comment in ad by its id: {}", commentId);
         Comment comment = commentRepository.findById(Long.valueOf(commentId)).orElseThrow(CommentNotFoundException::new);
         Ad ad = adRepository.findById(Long.valueOf(adId)).orElseThrow(AdNotFoundException::new);
-        boolean remove = ad.getComments().remove(commentId);
+        ad.getComments().remove(comment);
         commentRepository.delete(comment);
 
     }
