@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.controller.interfaces.RegisterApi;
 import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.entity.Role;
+import ru.skypro.homework.service.AuthService;
 
 import javax.validation.Valid;
 
@@ -18,6 +20,13 @@ import javax.validation.Valid;
 @CrossOrigin(value = "http://localhost:3000")
 public class RegisterApiController implements RegisterApi {
 
+    private final AuthService authService;
+
+    public RegisterApiController(AuthService authService) {
+        this.authService = authService;
+    }
+
+
     @PostMapping(
             value = "/register",
             consumes = {"application/json"}
@@ -25,7 +34,11 @@ public class RegisterApiController implements RegisterApi {
     public ResponseEntity<Void> register(
             @Parameter(name = "RegisterDto", description = "") @Valid @RequestBody(required = false) RegisterDto registerDto
     ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        if (authService.register(registerDto)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
     }
 }

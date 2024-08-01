@@ -1,21 +1,22 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdsDto;
-import ru.skypro.homework.dto.CreateOrUpdateAdDto;
-import ru.skypro.homework.dto.ExtendedAdDto;
+import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
+import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
+import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.ImageService;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class AdServiceImpl implements AdService {
 
@@ -33,13 +35,7 @@ public class AdServiceImpl implements AdService {
     private final AdMapper adMapper;
     private final ImageService imageService;
     private final UserRepository userRepository;
-
-    public AdServiceImpl(AdRepository adRepository, AdMapper adMapper, ImageService imageService, UserRepository userRepository) {
-        this.adRepository = adRepository;
-        this.adMapper = adMapper;
-        this.imageService = imageService;
-        this.userRepository = userRepository;
-    }
+    private final CommentService commentService;
 
     @Override
     public AdDto createAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile file, Authentication authentication) {
@@ -66,7 +62,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public ExtendedAdDto getAdById(Long id) {
         log.info("Finding ad by id");
-        return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(RuntimeException::new);
+        return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(AdNotFoundException::new);
     }
 
     @Override
@@ -89,8 +85,8 @@ public class AdServiceImpl implements AdService {
     @Override
     public void removeAd(Long id, Authentication authentication) {
         log.info("Removing ad by its id, ows to user: {}", authentication.getName());
-        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
         Ad ad = adRepository.findById(id).orElseThrow(RuntimeException::new);
+        commentService.deleteAllByAdId(Math.toIntExact(id));
         adRepository.deleteById(id);
         imageService.deleteImage(ad.getAdImage().getId());
     }
@@ -102,7 +98,7 @@ public class AdServiceImpl implements AdService {
             throw new IllegalArgumentException("Price cannot be negative");
         }
 
-        Ad ad = adRepository.findById(id).orElseThrow(RuntimeException::new);
+        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         ad.setPrice(BigDecimal.valueOf(createOrUpdateAdDto.getPrice()));
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setDescription(createOrUpdateAdDto.getDescription());
@@ -114,7 +110,7 @@ public class AdServiceImpl implements AdService {
     public byte[] updateImage(MultipartFile file, Authentication authentication, Long id) throws IOException {
         log.info("Updating ad image by its id, ows to user: {}", authentication.getName());
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        Ad updateAdImage = adRepository.findById(id).orElseThrow(RuntimeException::new);
+        Ad updateAdImage = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         Long previousImageId = updateAdImage.getAdImage().getId();
         imageService.deleteImage(previousImageId);
         try {

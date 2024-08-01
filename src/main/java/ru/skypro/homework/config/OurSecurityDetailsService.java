@@ -11,14 +11,14 @@ import ru.skypro.homework.repository.UserRepository;
 import java.util.Optional;
 
 @Service
-public class OurSecutiryDetailsService implements UserDetailsService {
+public class OurSecurityDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
     private OurSecurityDetails ourSecurityDetails;
 
 
-    public OurSecutiryDetailsService() {
+    public OurSecurityDetailsService() {
 
     }
 

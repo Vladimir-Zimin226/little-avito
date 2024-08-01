@@ -18,7 +18,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class WebSecurityConfig {
 
     @Autowired
-    private OurSecutiryDetailsService ourSecutiryDetailsService;
+    private OurSecurityDetailsService ourSecurityDetailsService;
 
 
     private static final String[] AUTH_WHITELIST = {
@@ -79,7 +79,7 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(ourSecutiryDetailsService);
+        provider.setUserDetailsService(ourSecurityDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

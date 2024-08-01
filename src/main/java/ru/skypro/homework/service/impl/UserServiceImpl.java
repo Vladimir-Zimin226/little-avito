@@ -1,5 +1,6 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 
@@ -27,12 +29,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final ImageService imageService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper mapper, PasswordEncoder encoder, ImageService imageService) {
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-        this.encoder = encoder;
-        this.imageService = imageService;
-    }
 
     @Override
     public UserDto getAuthorizedUserDto(Authentication authentication) {
@@ -41,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void NewPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication) {
+    public void newPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication) {
         log.info("Updating password for user: {}", authentication.getName());
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
         user.setPassword(encoder.encode(newPasswordDto.getNewPassword()));
@@ -53,9 +49,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUserDto(UpdateUserDto updateUserDto, Authentication authentication) {
         log.info("Updating user information for user:{}", authentication.getName());
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        user.setFirstName(updateUserDto.getFirstName());
-        user.setLastName(updateUserDto.getLastName());
-        user.setPhone(updateUserDto.getPhone());
+        mapper.createUserFromDto(updateUserDto);
         userRepository.save(user);
         return mapper.toUserDto(user);
     }
@@ -63,7 +57,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserImage(MultipartFile file, Authentication authentication) throws IOException {
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
-        user.setUserPhoto(imageService.downloadImage(file));
+        try {
+            user.setUserPhoto(imageService.downloadImage(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         userRepository.save(user);
         mapper.toUserDto(user);
     }

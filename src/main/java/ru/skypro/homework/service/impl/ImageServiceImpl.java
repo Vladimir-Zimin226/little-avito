@@ -1,5 +1,6 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,14 +12,11 @@ import java.io.IOException;
 
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
-
-    public ImageServiceImpl(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
 
 
     @Override
@@ -33,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void deleteImage(Long id) {
-        log.info("Deletimg the image by its id");
+        log.info("Deleting the image by its id");
         imageRepository.deleteById(id);
     }
 

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 public interface UsersApi {
 
@@ -33,7 +35,7 @@ public interface UsersApi {
             value = "/me",
             produces = { "application/json" }
     )
-    ResponseEntity<UserDto> getUser();
+    ResponseEntity<UserDto> getUser(Authentication authentication);
 
     @Operation(
             operationId = "setPassword",
@@ -49,13 +51,13 @@ public interface UsersApi {
             value = "/set_password",
             consumes = { "application/json" }
     )
-    ResponseEntity<Void> setPassword(@Parameter(name = "NewPasswordDto", description = "") @Valid NewPasswordDto newPasswordDto);
+    ResponseEntity<Void> setPassword(@Parameter(name = "NewPasswordDto", description = "") @Valid NewPasswordDto newPasswordDto, Authentication authentication);
 
 
     @Operation(
             operationId = "updateUser",
             summary = "Обновление информации об авторизованном пользователе",
-            tags = { "Пользователи" },
+            tags = {"Пользователи"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateUserDto.class))
@@ -65,10 +67,10 @@ public interface UsersApi {
     )
     @PatchMapping(
             value = "/me",
-            produces = { "application/json" },
-            consumes = { "application/json" }
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
-    ResponseEntity<UpdateUserDto> updateUser(@Parameter(name = "UpdateUserDto", description = "") @Valid UpdateUserDto updateUserDto);
+    ResponseEntity<UserDto> updateUser(@Parameter(name = "UpdateUserDto", description = "") @Valid UpdateUserDto updateUserDto, Authentication authentication);
 
 
     @Operation(
@@ -84,5 +86,5 @@ public interface UsersApi {
             value = "/me/image",
             consumes = { "multipart/form-data" }
     )
-    ResponseEntity<Void> updateUserImage(@Parameter(name = "image", description = "", required = true) MultipartFile image);
+    ResponseEntity<Void> updateUserImage(@Parameter(name = "image", description = "", required = true) MultipartFile image, Authentication authentication) throws IOException;
 }

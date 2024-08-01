@@ -6,11 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 public interface AdsApi {
@@ -33,8 +35,8 @@ public interface AdsApi {
     )
     ResponseEntity<AdDto> addAd(
             @Parameter(name = "properties", description = "", required = true) @Valid @RequestParam(value = "properties", required = true) CreateOrUpdateAdDto properties,
-            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
-    );
+            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication
+    ) throws IOException;
 
     @Operation(
             operationId = "getAds",
@@ -71,7 +73,7 @@ public interface AdsApi {
             value = "/me",
             produces = {"application/json"}
     )
-    ResponseEntity<AdsDto> getAdsMe();
+    ResponseEntity<AdsDto> getAdsMe(Authentication authentication);
 
     @Operation(
             operationId = "getAllAds",
@@ -104,8 +106,7 @@ public interface AdsApi {
             value = "/{id}"
     )
     ResponseEntity<Void> removeAd(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id
-    );
+            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id, Authentication authentication);
 
     @Operation(
             operationId = "updateAds",
@@ -127,7 +128,7 @@ public interface AdsApi {
     )
     ResponseEntity<AdDto> updateAds(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "CreateOrUpdateAdDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateAdDto createOrUpdateAdDto
+            @Parameter(name = "CreateOrUpdateAdDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication
     );
 
     @Operation(
@@ -150,6 +151,6 @@ public interface AdsApi {
     )
     ResponseEntity<List<byte[]>> updateImage(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "image", required = true) @RequestPart(value = "image", required = true) MultipartFile image
-    );
+            @Parameter(name = "image", required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException;
+
 }

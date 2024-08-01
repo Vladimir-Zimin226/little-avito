@@ -12,7 +12,7 @@ public interface UserService {
 
     UserDto getAuthorizedUserDto(Authentication authentication);
 
-    void NewPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication);
+    void newPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication);
 
     UserDto updateUserDto(UpdateUserDto updateUserDto, Authentication authentication);
 
