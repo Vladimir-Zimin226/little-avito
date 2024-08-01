@@ -41,7 +41,7 @@ public class CommentsApiController implements CommentsApi {
     }
 
 
-    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(
             value = "/{adId}/comments/{commentId}"
     )
@@ -63,7 +63,7 @@ public class CommentsApiController implements CommentsApi {
     }
 
 
-    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasRole('ADMIN')")
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasAuthority('ADMIN')")
     @PatchMapping(
             value = "/{adId}/comments/{commentId}",
             produces = {"application/json"},

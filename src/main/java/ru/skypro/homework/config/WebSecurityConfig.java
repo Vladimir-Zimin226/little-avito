@@ -1,5 +1,6 @@
 package ru.skypro.homework.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    @Autowired
-    private OurSecurityDetailsService ourSecurityDetailsService;
+    private final OurSecurityDetailsService ourSecurityDetailsService;
 
 
     private static final String[] AUTH_WHITELIST = {

@@ -3,7 +3,6 @@ package ru.skypro.homework.controller.controllers;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.controller.interfaces.AdsApi;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdService;
-import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -67,7 +65,7 @@ public class AdsApiController implements AdsApi {
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAd(
             @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id, Authentication authentication) {
@@ -76,7 +74,7 @@ public class AdsApiController implements AdsApi {
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}",
             produces = {"application/json"},
             consumes = {"application/json"})
@@ -87,7 +85,7 @@ public class AdsApiController implements AdsApi {
         return ResponseEntity.ok(adService.updateAd(createOrUpdateAdDto, authentication, Long.valueOf(id)));
     }
 
-    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAdById(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}/image",
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"})

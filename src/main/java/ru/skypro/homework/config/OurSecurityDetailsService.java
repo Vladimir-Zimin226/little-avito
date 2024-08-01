@@ -1,5 +1,6 @@
 package ru.skypro.homework.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,18 +12,12 @@ import ru.skypro.homework.repository.UserRepository;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class OurSecurityDetailsService implements UserDetailsService {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
-    private OurSecurityDetails ourSecurityDetails;
-
-
-    public OurSecurityDetailsService() {
-
-    }
-
-
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final OurSecurityDetails ourSecurityDetails;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

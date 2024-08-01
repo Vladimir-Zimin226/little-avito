@@ -13,14 +13,12 @@ import ru.skypro.homework.dto.SecurityDto;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
+
 
 @Component
 @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class OurSecurityDetails implements UserDetails {
 
-
-    @Autowired
     private final SecurityDto securityDto;
 
     public OurSecurityDetails(SecurityDto securityDto) {
