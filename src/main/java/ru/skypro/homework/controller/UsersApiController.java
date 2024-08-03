@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.exceptions.WrongCurrentPasswordException;
 import ru.skypro.homework.service.UserService;
 
 import java.util.Optional;
@@ -29,9 +28,7 @@ import javax.validation.Valid;
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UsersApiController{
-
-    private final NativeWebRequest request;
+public class UsersApiController {
 
     private final UserService userService;
 
@@ -42,7 +39,7 @@ public class UsersApiController{
     @Operation(
             operationId = "getUser",
             summary = "Получение информации об авторизованном пользователе",
-            tags = { "Пользователи" },
+            tags = {"Пользователи"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
@@ -53,11 +50,11 @@ public class UsersApiController{
     @RequestMapping(
             method = RequestMethod.GET,
             value = "/users/me",
-            produces = { "application/json" }
+            produces = {"application/json"}
     )
     public ResponseEntity<UserDto> getUser() {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"image\" : \"image\", \"role\" : \"USER\", \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\" }";
                     break;
@@ -71,7 +68,7 @@ public class UsersApiController{
     @Operation(
             operationId = "setPassword",
             summary = "Обновление пароля",
-            tags = { "Пользователи" },
+            tags = {"Пользователи"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "403", description = "Forbidden")
@@ -80,21 +77,17 @@ public class UsersApiController{
     @RequestMapping(
             method = RequestMethod.POST,
             value = "/set_password",
-            consumes = { "application/json" }
+            consumes = {"application/json"}
     )
     public ResponseEntity<NewPasswordDto> setPassword(@Valid @RequestBody NewPasswordDto dto, Authentication authentication) {
-        try {
-            userService.updatePassword(dto, authentication.getName());
-        } catch (WrongCurrentPasswordException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(dto);
-        }
-        return ResponseEntity.ok(dto);
+        userService.updatePassword(dto, authentication.getName());
+        return ResponseEntity.ok().build();
     }
 
     @Operation(
             operationId = "updateUserDto",
             summary = "Обновление информации об авторизованном пользователе",
-            tags = { "Пользователи" },
+            tags = {"Пользователи"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateUserDto.class))
@@ -105,8 +98,8 @@ public class UsersApiController{
     @RequestMapping(
             method = RequestMethod.PATCH,
             value = "/me",
-            produces = { "application/json" },
-            consumes = { "application/json" }
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto dto, Authentication authentication) {
         return ResponseEntity.ok(userService.updateInformationAboutUser(dto, authentication.getName()));
@@ -115,7 +108,7 @@ public class UsersApiController{
     @Operation(
             operationId = "updateUserImage",
             summary = "Обновление аватара авторизованного пользователя",
-            tags = { "Пользователи" },
+            tags = {"Пользователи"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
                     @ApiResponse(responseCode = "401", description = "Unauthorized")
@@ -124,7 +117,7 @@ public class UsersApiController{
     @RequestMapping(
             method = RequestMethod.PATCH,
             value = "/users/me/image",
-            consumes = { "multipart/form-data" }
+            consumes = {"multipart/form-data"}
     )
     public ResponseEntity<Void> updateUserImage(
             @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image

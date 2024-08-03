@@ -2,11 +2,9 @@ package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +13,6 @@ import ru.skypro.homework.dto.LoginDto;
 import ru.skypro.homework.service.AuthService;
 
 import java.util.Optional;
-import javax.annotation.Generated;
 import javax.validation.Valid;
 
 @RestController
@@ -23,8 +20,6 @@ import javax.validation.Valid;
 @CrossOrigin(value = "http://localhost:3000")
 @RequiredArgsConstructor
 public class LoginApiController{
-
-    private final NativeWebRequest request;
 
     private final AuthService authService;
 
