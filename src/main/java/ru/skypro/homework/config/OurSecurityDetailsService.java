@@ -17,7 +17,6 @@ public class OurSecurityDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final OurSecurityDetails ourSecurityDetails;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -25,6 +24,5 @@ public class OurSecurityDetailsService implements UserDetailsService {
                 .map(userMapper::toSecurityDto);
         return securityDto.map(OurSecurityDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
-
     }
 }

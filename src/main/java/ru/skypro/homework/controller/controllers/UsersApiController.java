@@ -3,6 +3,7 @@ package ru.skypro.homework.controller.controllers;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
-public class UsersApiController implements UsersApi {
+public class UsersApiController{
 
     private final UserService userService;
 
@@ -44,7 +45,7 @@ public class UsersApiController implements UsersApi {
             consumes = { "application/json" }
     )
     public ResponseEntity<Void> setPassword(
-            @Parameter(name = "NewPasswordDto", description = "") @Valid @RequestBody(required = false) NewPasswordDto newPasswordDto, Authentication authentication) {
+            @Parameter(name = "NewPasswordDto") @Valid @RequestBody(required = false) NewPasswordDto newPasswordDto, Authentication authentication) {
         userService.newPasswordDto(newPasswordDto,authentication);
         return ResponseEntity.ok().build();
     }
@@ -56,7 +57,7 @@ public class UsersApiController implements UsersApi {
             consumes = { "application/json" }
     )
     public ResponseEntity<UserDto> updateUser(
-            @Parameter(name = "UpdateUserDto", description = "") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto, Authentication authentication) {
+            @Parameter(name = "UpdateUserDto") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto, Authentication authentication) {
         return ResponseEntity.ok(userService.updateUserDto(updateUserDto, authentication));
 
     }
@@ -67,8 +68,16 @@ public class UsersApiController implements UsersApi {
             consumes = { "multipart/form-data" }
     )
     public ResponseEntity<Void> updateUserImage(
-            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {
+            @Parameter(name = "image",required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {
         userService.updateUserImage(image, authentication);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(
+            value = "/{id}/image",
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
+        log.info("Get user image with id" + id);
+        return ResponseEntity.ok(userService.getUserImage(id));
     }
 }

@@ -3,12 +3,12 @@ package ru.skypro.homework.controller.controllers;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.controller.interfaces.AdsApi;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.AdService;
 
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/ads")
-public class AdsApiController implements AdsApi {
+public class AdsApiController{
 
     private final AdService adService;
 
@@ -33,20 +33,21 @@ public class AdsApiController implements AdsApi {
     @PostMapping(value = "",
             produces = {"application/json"},
             consumes = {"multipart/form-data"})
-    public ResponseEntity<AdDto> addAd(@Parameter(name = "properties", description = "", required = true)
-                                       @Valid @RequestParam(value = "properties", required = true) CreateOrUpdateAdDto properties,
-                                       @Parameter(name = "image", description = "", required = true)
-                                       @RequestPart(value = "image", required = true) MultipartFile image,
+    public ResponseEntity<AdDto> addAds(@Parameter(name = "properties", required = true)
+                                       @Valid @RequestPart(value = "properties") CreateOrUpdateAdDto properties,
+                                       @Parameter(name = "image", required = true)
+                                       @RequestPart(value = "image") MultipartFile image,
                                        Authentication authentication) throws IOException {
         return ResponseEntity.ok(adService.createAd(properties, image, authentication));
+
     }
 
 
     @GetMapping(value = "/{id}",
             produces = {"application/json"})
-    public ResponseEntity<ExtendedAdDto> getAds(@Parameter(name = "id", description = "", required = true)
+    public ResponseEntity<ExtendedAdDto> getAds(@Parameter(name = "id", required = true)
                                                 @PathVariable("id") Integer id) {
-        return ResponseEntity.ok(adService.getAdById(Long.valueOf(id)));
+        return ResponseEntity.ok(adService.getAdById(id));
     }
 
 
@@ -57,19 +58,17 @@ public class AdsApiController implements AdsApi {
     }
 
 
-    @GetMapping(value = "",
-            produces = {"application/json"})
+    @GetMapping(produces = {"application/json"})
     public ResponseEntity<AdsDto> getAllAds() {
         return ResponseEntity.ok(adService.getAllAds());
-
     }
 
 
     @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAd(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id, Authentication authentication) {
-        adService.removeAd(Long.valueOf(id), authentication);
+            @Parameter(name = "id", required = true) @PathVariable("id") Integer id, Authentication authentication) {
+        adService.removeAd(id, authentication);
         return ResponseEntity.ok().build();
     }
 
@@ -79,10 +78,10 @@ public class AdsApiController implements AdsApi {
             produces = {"application/json"},
             consumes = {"application/json"})
     public ResponseEntity<AdDto> updateAds(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "CreateOrUpdateAdDto", description = "")
+            @Parameter(name = "id",required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "CreateOrUpdateAdDto")
             @Valid @RequestBody(required = false) CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication) {
-        return ResponseEntity.ok(adService.updateAd(createOrUpdateAdDto, authentication, Long.valueOf(id)));
+        return ResponseEntity.ok(adService.updateAd(createOrUpdateAdDto, authentication, id));
     }
 
     @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
@@ -90,9 +89,16 @@ public class AdsApiController implements AdsApi {
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"})
     public ResponseEntity<List<byte[]>> updateImage(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {
-        return ResponseEntity.ok(Collections.singletonList(adService.updateImage(image, authentication, Long.valueOf(id))));
+            @Parameter(name = "id", required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "image", required = true) @RequestPart(value = "image") MultipartFile image, Authentication authentication) throws IOException {
+        return ResponseEntity.ok(Collections.singletonList(adService.updateImage(image, authentication,id)));
+    }
+
+    @GetMapping(
+            value = "/{id}/image",
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id){
+        return ResponseEntity.ok(adService.getAdImage(id));
     }
 
 }

@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-public class RegisterApiController implements RegisterApi {
+public class RegisterApiController{
 
     private final AuthService authService;
 
@@ -32,7 +32,7 @@ public class RegisterApiController implements RegisterApi {
             consumes = {"application/json"}
     )
     public ResponseEntity<Void> register(
-            @Parameter(name = "RegisterDto", description = "") @Valid @RequestBody(required = false) RegisterDto registerDto
+            @Parameter(name = "RegisterDto") @Valid @RequestBody(required = false) RegisterDto registerDto
     ) {
         if (authService.register(registerDto)) {
             return ResponseEntity.ok().build();

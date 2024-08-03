@@ -3,6 +3,7 @@ package ru.skypro.homework.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.repository.ImageRepository;
@@ -25,18 +26,18 @@ public class ImageServiceImpl implements ImageService {
         Image image = new Image();
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
-        image.setFileSize(file.getSize());
         return imageRepository.save(image);
     }
 
+
     @Override
-    public void deleteImage(Long id) {
+    public void deleteImage(Integer id) {
         log.info("Deleting the image by its id");
         imageRepository.deleteById(id);
     }
 
     @Override
-    public byte[] getImage(Long id){
+    public byte[] getImage(Integer id){
         return imageRepository.findById(id).orElseThrow(RuntimeException::new).getData();
     }
 }

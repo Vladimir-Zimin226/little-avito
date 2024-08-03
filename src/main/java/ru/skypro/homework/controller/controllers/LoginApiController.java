@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-public class LoginApiController implements LoginApi {
+public class LoginApiController{
 
     private final AuthService authService;
 
@@ -29,12 +29,12 @@ public class LoginApiController implements LoginApi {
             consumes = {"application/json"}
     )
     public ResponseEntity<Void> login(
-            @Parameter(name = "LoginDto", description = "") @Valid @RequestBody(required = false) LoginDto loginDto
+            @Parameter(name = "LoginDto") @Valid @RequestBody(required = false) LoginDto loginDto
     ) {
         if (authService.login(loginDto.getUsername(), loginDto.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
     }

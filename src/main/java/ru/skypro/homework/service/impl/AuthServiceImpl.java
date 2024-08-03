@@ -18,7 +18,7 @@ import ru.skypro.homework.service.AuthService;
 @Slf4j
 public class AuthServiceImpl implements AuthService {
 
-    private final OurSecurityDetailsService ourSecurityDeatailsService;
+    private final OurSecurityDetailsService ourSecurityDetailsService;
     private final PasswordEncoder encoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean login(String userName, String password) {
-        UserDetails userDetails = ourSecurityDeatailsService.loadUserByUsername(userName);
+        UserDetails userDetails = ourSecurityDetailsService.loadUserByUsername(userName);
         return encoder.matches(password, userDetails.getPassword());
     }
 

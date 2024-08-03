@@ -18,4 +18,6 @@ public interface UserService {
 
     void updateUserImage(MultipartFile file, Authentication authentication) throws IOException;
 
+    byte[] getUserImage(Integer userId) throws IOException;
+
 }

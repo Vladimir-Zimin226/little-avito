@@ -18,7 +18,9 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 
 @Service
@@ -79,6 +81,19 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to update user image", e);
         }
 
+    }
+
+    @Transactional
+    @Override
+    public byte[] getUserImage(Integer userId) throws IOException {
+        log.info("Request to getting image");
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        if (user.getUserPhoto() != null) {
+            return user.getUserPhoto().getData();
+        } else {
+            File emptyAvatar = new File("src/main/resources/defaultPhoto/6700.jpg");
+            return Files.readAllBytes(emptyAvatar.toPath());
+        }
     }
 
 }

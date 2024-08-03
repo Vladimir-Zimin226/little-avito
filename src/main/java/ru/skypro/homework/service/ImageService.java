@@ -9,7 +9,7 @@ public interface ImageService {
 
     Image downloadImage(MultipartFile file) throws IOException;
 
-    void deleteImage(Long id);
+    void deleteImage(Integer id);
 
-    byte[] getImage(Long id);
+    byte[] getImage(Integer id);
 }

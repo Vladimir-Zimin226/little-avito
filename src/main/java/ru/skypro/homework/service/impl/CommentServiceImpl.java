@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication) {
         log.info("Adding the comment");
-        Ad ad = adRepository.findById(Long.valueOf(adId))
+        Ad ad = adRepository.findById(adId)
                 .orElseThrow(() -> new IllegalArgumentException("Ad not found"));
         Comment comment = new Comment();
         comment.setAd(ad);
@@ -55,8 +55,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
         log.info("Deleting the comment in ad by its id: {}", commentId);
-        Comment comment = commentRepository.findById(Long.valueOf(commentId)).orElseThrow(CommentNotFoundException::new);
-        Ad ad = adRepository.findById(Long.valueOf(adId)).orElseThrow(AdNotFoundException::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         ad.getComments().remove(comment);
         commentRepository.delete(comment);
 
@@ -69,9 +69,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentsDto getComments(Long adId) {
+    public CommentsDto getComments(Integer adId) {
         log.info("Getting all comments in ad {}", adId);
-        Ad ad = adRepository.findById(Long.valueOf(adId)).orElseThrow(AdNotFoundException::new);
+        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
 
         List<Comment> comments = ad.getComments();
 
@@ -87,16 +87,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         log.info("Updating comment in ad by its id: {}", commentId);
-        Comment comment = commentRepository.findById(Long.valueOf(commentId)).orElseThrow(CommentNotFoundException::new);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         comment.setText(createOrUpdateCommentDto.getText());
-        Ad ad = adRepository.findById(Long.valueOf(adId)).orElseThrow(AdNotFoundException::new);
+        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
         ad.getComments().add(commentId, comment);
         Comment updatedComment = commentRepository.save(comment);
         return commentMapper.toCommentDto(updatedComment);
     }
 
     @Override
-    public Comment getComment(Long commentId) {
+    public Comment getComment(Integer commentId) {
         log.info("Getting comment by its id: {}", commentId);
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }

@@ -58,7 +58,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public ExtendedAdDto getAdById(Long id) {
+    public ExtendedAdDto getAdById(Integer id) {
         log.info("Finding ad by id");
         return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(AdNotFoundException::new);
     }
@@ -82,7 +82,7 @@ public class AdServiceImpl implements AdService {
 
     @Transactional
     @Override
-    public void removeAd(Long id, Authentication authentication) {
+    public void removeAd(Integer id, Authentication authentication) {
         log.info("Removing ad by its id, ows to user: {}", authentication.getName());
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         commentService.deleteAllByAdId(Math.toIntExact(id));
@@ -91,7 +91,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Long id) {
+    public AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Integer id) {
         log.info("Requesting update ad by id");
         if (createOrUpdateAdDto.getPrice() < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
@@ -107,11 +107,10 @@ public class AdServiceImpl implements AdService {
 
     @Transactional
     @Override
-    public byte[] updateImage(MultipartFile file, Authentication authentication, Long id) throws IOException {
+    public byte[] updateImage(MultipartFile file, Authentication authentication, Integer id){
         log.info("Updating ad image by its id, ows to user: {}", authentication.getName());
-        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
         Ad updateAdImage = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
-        Long previousImageId = updateAdImage.getAdImage().getId();
+        Integer previousImageId = updateAdImage.getAdImage().getId();
         imageService.deleteImage(previousImageId);
         try {
             updateAdImage.setAdImage(imageService.downloadImage(file));
@@ -123,7 +122,15 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public Ad getAd(Long id) {
+    public Ad getAd(Integer id) {
         return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
+
+    @Transactional
+    @Override
+    public byte[] getAdImage(Integer adId) {
+        log.info("getting image of an AD with a ID: {}", adId);
+        return imageService.getImage(adRepository.findById(adId).orElseThrow(AdNotFoundException::new).getAdImage().getId());
+    }
+
 }

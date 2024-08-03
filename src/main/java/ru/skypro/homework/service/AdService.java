@@ -14,18 +14,20 @@ public interface AdService {
 
     AdDto createAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile file, Authentication authentication) throws IOException;
 
-    ExtendedAdDto getAdById(Long id);
+    ExtendedAdDto getAdById(Integer id);
 
     AdsDto getAllMyAds(Authentication authentication);
 
     AdsDto getAllAds();
 
-    void removeAd(Long id, Authentication authentication);
+    void removeAd(Integer id, Authentication authentication);
 
-    AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Long id);
+    AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Integer id);
 
-    byte[] updateImage(MultipartFile file, Authentication authentication, Long id) throws IOException;
+    byte[] updateImage(MultipartFile file, Authentication authentication, Integer id) throws IOException;
 
-    Ad getAd(Long id);
+    Ad getAd(Integer id);
+
+    byte[] getAdImage(Integer adId);
 
 }

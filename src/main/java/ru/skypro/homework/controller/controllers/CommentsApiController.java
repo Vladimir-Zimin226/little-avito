@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.controller.interfaces.CommentsApi;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
@@ -20,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/ads")
-public class CommentsApiController implements CommentsApi {
+public class CommentsApiController {
 
     public final CommentService commentService;
 
@@ -34,7 +33,7 @@ public class CommentsApiController implements CommentsApi {
             consumes = {"application/json"}
     )
     public ResponseEntity<CommentDto> addComment(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "id", required = true) @PathVariable("id") Integer id,
             @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto, @NotNull Authentication authentication) {
         return ResponseEntity.ok(commentService.addComment(id, createOrUpdateCommentDto, authentication));
     }
@@ -45,8 +44,8 @@ public class CommentsApiController implements CommentsApi {
             value = "/{adId}/comments/{commentId}"
     )
     public ResponseEntity<Void> deleteComment(
-            @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
-            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId) {
+            @Parameter(name = "adId",required = true) @PathVariable("adId") Integer adId,
+            @Parameter(name = "commentId", required = true) @PathVariable("commentId") Integer commentId) {
         commentService.deleteComment(adId, commentId);
         return ResponseEntity.ok().build();
     }
@@ -57,8 +56,8 @@ public class CommentsApiController implements CommentsApi {
             produces = {"application/json"}
     )
     public ResponseEntity<CommentsDto> getComments(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id) {
-        return ResponseEntity.ok(commentService.getComments(Long.valueOf(id)));
+            @Parameter(name = "id",required = true) @PathVariable("id") Integer id) {
+        return ResponseEntity.ok(commentService.getComments(id));
     }
 
 
@@ -69,9 +68,9 @@ public class CommentsApiController implements CommentsApi {
             consumes = {"application/json"}
     )
     public ResponseEntity<CommentDto> updateComment(
-            @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
-            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId,
-            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+            @Parameter(name = "adId", required = true) @PathVariable("adId") Integer adId,
+            @Parameter(name = "commentId",required = true) @PathVariable("commentId") Integer commentId,
+            @Parameter(name = "CreateOrUpdateCommentDto") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, createOrUpdateCommentDto));
     }
 }

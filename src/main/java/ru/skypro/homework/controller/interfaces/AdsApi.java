@@ -74,22 +74,22 @@ public interface AdsApi {
             produces = {"application/json"}
     )
     ResponseEntity<AdsDto> getAdsMe(Authentication authentication);
-
-    @Operation(
-            operationId = "getAllAds",
-            summary = "Получение всех объявлений",
-            tags = {"Объявления"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = AdsDto.class))
-                    })
-            }
-    )
-    @GetMapping(
-            value = "",
-            produces = {"application/json"}
-    )
-    ResponseEntity<AdsDto> getAllAds();
+//
+//    @Operation(
+//            operationId = "getAllAds",
+//            summary = "Получение всех объявлений",
+//            tags = {"Объявления"},
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "OK", content = {
+//                            @Content(mediaType = "application/json", schema = @Schema(implementation = AdsDto.class))
+//                    })
+//            }
+//    )
+//    @GetMapping(
+//            value = "",
+//            produces = {"application/json"}
+//    )
+//    ResponseEntity<AdsDto> getAllAds();
 
     @Operation(
             operationId = "removeAd",

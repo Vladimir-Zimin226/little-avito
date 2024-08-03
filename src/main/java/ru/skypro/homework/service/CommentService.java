@@ -14,9 +14,9 @@ public interface CommentService {
 
     void deleteAllByAdId(Integer adId);
 
-    CommentsDto getComments(Long adId);
+    CommentsDto getComments(Integer adId);
 
     CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
-    Comment getComment(Long commentId);
+    Comment getComment(Integer commentId);
 }

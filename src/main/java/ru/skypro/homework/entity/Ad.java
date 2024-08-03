@@ -16,7 +16,7 @@ import java.util.List;
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -33,6 +33,7 @@ public class Ad {
 
     @OneToMany(mappedBy = "ad")
     private List<Comment> comments;
+
 
     @OneToOne
     @JoinColumn(name = "image_id")
