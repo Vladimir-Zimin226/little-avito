@@ -1,7 +1,6 @@
     package ru.skypro.homework.config;
     
-    
-    import org.springframework.beans.factory.annotation.Autowired;
+
     import org.springframework.context.annotation.ScopedProxyMode;
     import org.springframework.security.core.GrantedAuthority;
     import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,8 +12,9 @@
     
     import java.util.Collection;
     import java.util.Collections;
-    
-    
+    import java.util.Optional;
+
+
     @Component
     @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
     public class OurSecurityDetails implements UserDetails {
@@ -28,10 +28,12 @@
     
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            if (securityDto == null || securityDto.getRoleDto() == null) {
-                return Collections.emptySet();
-            }
-            return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + securityDto.getRoleDto()));
+            return Optional.ofNullable(securityDto)
+                    .map(SecurityDto::getRoleDto)
+                    .map(role -> "ROLE_" + role)
+                    .map(SimpleGrantedAuthority::new)
+                    .map(Collections::singleton)
+                    .orElseGet(Collections::emptySet);
         }
     
     

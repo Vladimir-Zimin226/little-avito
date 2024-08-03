@@ -1,4 +1,4 @@
-package ru.skypro.homework.controller.controllers;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.Role;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class AdsApiController{
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAd(
             @Parameter(name = "id", required = true) @PathVariable("id") Integer id, Authentication authentication) {
@@ -73,7 +74,7 @@ public class AdsApiController{
     }
 
 
-    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}",
             produces = {"application/json"},
             consumes = {"application/json"})
@@ -84,7 +85,7 @@ public class AdsApiController{
         return ResponseEntity.ok(adService.updateAd(createOrUpdateAdDto, authentication, id));
     }
 
-    @PreAuthorize("@adServiceImpl.getAd(#id).email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@adServiceImpl.getAd(#id).email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}/image",
             produces = {"application/octet-stream"},
             consumes = {"multipart/form-data"})

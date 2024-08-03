@@ -38,18 +38,18 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         authorization ->
                                 authorization
-//                                        .mvcMatchers(AUTH_WHITELIST).permitAll()
+                                        .mvcMatchers(AUTH_WHITELIST).permitAll()
 //                                        // разрещили доступ к получению всех объявлений и отдельного объявления по ID для всех пользователей
 //                                        .mvcMatchers("/ads", "/ads/{id}").permitAll()
 //
 //                                        // разрешили доступ к добавлению объявления только для авторизованных пользователей
-//                                        .mvcMatchers("/ads").hasAuthority("ROLE_USER")
+//                                        .mvcMatchers("/ads").hasRole("USER")
 //
 //                                        // доступ к изменению или удалению объявлений и картинок объявления только для авторизованных пользователей
 //                                        .mvcMatchers("/ads/{id}", "/ads/{id}/image").authenticated()
 //
 //                                        // доступ к просмотру и добавлению комментариев доступен для авторизованных пользователей
-//                                        .mvcMatchers("/ads/{id}/comments").hasAuthority("ROLE_USER")
+//                                        .mvcMatchers("/ads/{id}/comments").hasRole("USER")
 //
 //                                        // доступ к изменению и удалению комментариев доступен только авторизованным пользователям, при этом авторизованный пользователь может редактировать и удалять только свои комментарии
 //                                        .mvcMatchers("/ads/{id}/comments/{commentId}").authenticated()
@@ -65,9 +65,7 @@ public class WebSecurityConfig {
 //                                        .mvcMatchers("/ads/me").authenticated()
 //
 //                                        // админ имеет доступ к удалению и редактированию объявлений и комментариев любых пользователей
-//                                        .mvcMatchers("/ads/{id}", "/ads/{id}/comments/{commentId}").hasAuthority("ROLE_ADMIN")
-                                        .mvcMatchers("/**").permitAll()
-
+//                                        .mvcMatchers("/ads/{id}", "/ads/{id}/comments/{commentId}").hasRole("ADMIN")
                 )
                 .cors()
                 .and()

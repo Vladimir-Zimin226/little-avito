@@ -1,4 +1,4 @@
-package ru.skypro.homework.controller.controllers;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +39,7 @@ public class CommentsApiController {
     }
 
 
-    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(
             value = "/{adId}/comments/{commentId}"
     )
@@ -61,7 +61,7 @@ public class CommentsApiController {
     }
 
 
-    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email == authentication.name or hasAuthority('ADMIN')")
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(
             value = "/{adId}/comments/{commentId}",
             produces = {"application/json"},

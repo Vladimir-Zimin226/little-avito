@@ -85,7 +85,7 @@ public class AdServiceImpl implements AdService {
     public void removeAd(Integer id, Authentication authentication) {
         log.info("Removing ad by its id, ows to user: {}", authentication.getName());
         Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
-        commentService.deleteAllByAdId(Math.toIntExact(id));
+        commentService.deleteAllByAdId(id);
         adRepository.deleteById(id);
         imageService.deleteImage(ad.getAdImage().getId());
     }

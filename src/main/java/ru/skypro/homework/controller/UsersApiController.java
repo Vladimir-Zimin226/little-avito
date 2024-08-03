@@ -1,4 +1,4 @@
-package ru.skypro.homework.controller.controllers;
+package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.controller.interfaces.UsersApi;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
