@@ -2,6 +2,7 @@ package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.LoginDto;
 import ru.skypro.homework.dto.RegisterDto;
@@ -25,6 +26,11 @@ public interface UserMapper {
 
     @Mapping(source = "username", target = "email")
     User fromLoginDto(LoginDto loginDto);
+
+    @Mapping(target = "id", ignore = true)
+    void updateUserFromDto(UpdateUserDto updateUserDto, @MappingTarget User user);
+
+    UpdateUserDto toUpdateUserDto(User user);
 
     User createUserFromDto(UpdateUserDto updateUserDto);
 
