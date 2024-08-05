@@ -20,6 +20,7 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
+import java.io.IOException;
 import java.util.Optional;
 import javax.validation.Valid;
 
@@ -49,19 +50,11 @@ public class UsersApiController {
     )
     @RequestMapping(
             method = RequestMethod.GET,
-            value = "/users/me",
+            value = "/me",
             produces = {"application/json"}
     )
-    public ResponseEntity<UserDto> getUser() {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"firstName\" : \"firstName\", \"lastName\" : \"lastName\", \"image\" : \"image\", \"role\" : \"USER\", \"phone\" : \"phone\", \"id\" : 0, \"email\" : \"email\" }";
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<UserDto> getUser(Authentication authentication) {
+        return ResponseEntity.ok(userService.getAuthorizedUserDto(authentication));
 
     }
 
@@ -116,13 +109,20 @@ public class UsersApiController {
     )
     @RequestMapping(
             method = RequestMethod.PATCH,
-            value = "/users/me/image",
+            value = "/me/image",
             consumes = {"multipart/form-data"}
     )
     public ResponseEntity<Void> updateUserImage(
-            @Parameter(name = "image", description = "", required = true) @RequestPart(value = "image", required = true) MultipartFile image
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            @Parameter(name = "image",required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {
+        userService.updateUserImage(image, authentication);
+        return ResponseEntity.ok().build();
+    }
 
+    @GetMapping(
+            value = "/{id}/image",
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
+        log.info("Get user image with id" + id);
+        return ResponseEntity.ok(userService.getUserImage(id));
     }
 }
