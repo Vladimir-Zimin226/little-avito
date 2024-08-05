@@ -1,9 +1,11 @@
 package ru.skypro.homework.controller;
 
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,10 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-@RequiredArgsConstructor
 public class LoginApiController{
 
     private final AuthService authService;
+
 
     @Operation(
             operationId = "login",
@@ -32,14 +34,20 @@ public class LoginApiController{
     )
     @RequestMapping(
             method = RequestMethod.POST,
+
             value = "/login",
             consumes = {"application/json"}
     )
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto login) {
-        if (authService.login(login.getUsername(), login.getPassword())) {
+  
+    public ResponseEntity<Void> login(
+            @Parameter(name = "LoginDto") @Valid @RequestBody(required = false) LoginDto loginDto
+    ) {
+        if (authService.login(loginDto.getUsername(), loginDto.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
+
     }
 }

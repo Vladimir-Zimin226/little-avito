@@ -10,10 +10,19 @@ import ru.skypro.homework.entity.User;
 import java.io.IOException;
 import java.util.Optional;
 
-public interface UserService {
-    void updatePassword(NewPasswordDto newPassword, String username);
 
-    UpdateUserDto updateInformationAboutUser(UpdateUserDto updateUser, String username);
+public interface UserService {
+
+    UserDto getAuthorizedUserDto(Authentication authentication);
+
+    void newPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication);
+
+    UserDto updateUserDto(UpdateUserDto updateUserDto, Authentication authentication);
+
+    void updateUserImage(MultipartFile file, Authentication authentication) throws IOException;
+
+    byte[] getUserImage(Integer userId) throws IOException;
+
 
     boolean userExists(String username);
 

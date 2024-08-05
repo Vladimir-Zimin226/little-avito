@@ -23,6 +23,7 @@ import ru.skypro.homework.service.CommentService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setCreatedAt(LocalDateTime.now());
 
         User currentUser = userRepository.findByEmail(authentication.getName())
+
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         comment.setAuthor(currentUser);
 
@@ -129,3 +131,4 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 }
+

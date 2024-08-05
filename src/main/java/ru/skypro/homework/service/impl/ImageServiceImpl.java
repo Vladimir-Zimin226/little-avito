@@ -37,4 +37,4 @@ public class ImageServiceImpl implements ImageService {
     public byte[] getImage(Integer id){
         return imageRepository.findById(id).orElseThrow(RuntimeException::new).getData();
     }
-}
+

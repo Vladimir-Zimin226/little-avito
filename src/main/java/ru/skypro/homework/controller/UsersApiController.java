@@ -1,41 +1,40 @@
 package ru.skypro.homework.controller;
 
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
+
 import java.io.IOException;
 import java.util.Optional;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
+
 @RequiredArgsConstructor
 public class UsersApiController {
 
+
     private final UserService userService;
 
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
+    public UsersApiController(UserService userService) {
+        this.userService = userService;
     }
+
 
     @Operation(
             operationId = "getUser",
@@ -52,11 +51,13 @@ public class UsersApiController {
             method = RequestMethod.GET,
             value = "/me",
             produces = {"application/json"}
+
     )
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getAuthorizedUserDto(authentication));
 
     }
+
 
     @Operation(
             operationId = "setPassword",
@@ -69,9 +70,11 @@ public class UsersApiController {
     )
     @RequestMapping(
             method = RequestMethod.POST,
+
             value = "/set_password",
             consumes = {"application/json"}
     )
+
     public ResponseEntity<NewPasswordDto> setPassword(@Valid @RequestBody NewPasswordDto dto, Authentication authentication) {
         userService.updatePassword(dto, authentication.getName());
         return ResponseEntity.ok().build();
@@ -90,12 +93,16 @@ public class UsersApiController {
     )
     @RequestMapping(
             method = RequestMethod.PATCH,
+
             value = "/me",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
-    public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto dto, Authentication authentication) {
-        return ResponseEntity.ok(userService.updateInformationAboutUser(dto, authentication.getName()));
+
+    public ResponseEntity<UserDto> updateUser(
+            @Parameter(name = "UpdateUserDto") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto, Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUserDto(updateUserDto, authentication));
+
     }
 
     @Operation(
@@ -111,6 +118,7 @@ public class UsersApiController {
             method = RequestMethod.PATCH,
             value = "/me/image",
             consumes = {"multipart/form-data"}
+
     )
     public ResponseEntity<Void> updateUserImage(
             @Parameter(name = "image",required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {

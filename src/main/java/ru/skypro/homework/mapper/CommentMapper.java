@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
 

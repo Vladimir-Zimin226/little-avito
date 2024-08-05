@@ -1,9 +1,9 @@
 package ru.skypro.homework.controller;
 
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import lombok.RequiredArgsConstructor;
+
+import io.swagger.v3.oas.annotations.Parameter;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +16,10 @@ import javax.validation.Valid;
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-@RequiredArgsConstructor
 public class RegisterApiController{
 
     private final AuthService authService;
+
 
     @Operation(
             operationId = "register",
@@ -32,14 +32,19 @@ public class RegisterApiController{
     )
     @RequestMapping(
             method = RequestMethod.POST,
+
             value = "/register",
             consumes = {"application/json"}
     )
-    public ResponseEntity<?> register(@RequestBody @Valid RegisterDto register) {
-        if (authService.register(register)) {
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> register(
+            @Parameter(name = "RegisterDto") @Valid @RequestBody(required = false) RegisterDto registerDto
+    ) {
+        if (authService.register(registerDto)) {
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
+
     }
 }

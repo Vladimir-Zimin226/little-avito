@@ -13,6 +13,7 @@ import java.io.IOException;
 public interface AdService {
 
     AdDto createAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile file, Authentication authentication) throws IOException;
+
     ExtendedAdDto getAdById(Integer id);
     AdsDto getAllMyAds(Authentication authentication);
     AdsDto getAllAds();
@@ -20,6 +21,7 @@ public interface AdService {
     AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Integer id);
     byte[] updateImage(MultipartFile file, Authentication authentication, Integer id) throws IOException;
     Ad getAd(Integer id);
+
     byte[] getAdImage(Integer adId);
 
 }

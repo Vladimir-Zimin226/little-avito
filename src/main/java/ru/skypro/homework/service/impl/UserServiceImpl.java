@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,18 +35,31 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ImageService imageService;
 
+
+    @Transactional
     @Override
-    public void updatePassword(NewPasswordDto newPassword, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(UserNotFoundException::new);
-        if (passwordEncoder.matches(newPassword.getCurrentPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(newPassword.getNewPassword()));
+    public void updateUserImage(MultipartFile file, Authentication authentication){
+        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName())
+                .orElseThrow(UserNotFoundException::new);
+
+        log.info("User found: {}", user);
+
+        try {
+            Image image = imageService.downloadImage(file);
+            user.setUserPhoto(image);
+            log.info("Image downloaded and set for user: {}", user.getId());
             userRepository.save(user);
-        } else {
-            throw new WrongCurrentPasswordException();
+            log.info("User updated successfully: {}", user.getId());
+        } catch (IOException e) {
+            log.error("Error occurred while updating user image", e);
+            throw new RuntimeException("Failed to update user image", e);
         }
+
     }
 
+    @Transactional
     @Override
+
     public UpdateUserDto updateInformationAboutUser(UpdateUserDto updateUser, String username) {
         User user = userRepository.findByEmail(username).orElseThrow(UserNotFoundException::new);
         userMapper.updateUserFromDto(updateUser, user);
@@ -96,6 +110,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+
     public byte[] getUserImage(Integer userId) throws IOException {
         log.info("Request to getting image");
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -106,4 +121,6 @@ public class UserServiceImpl implements UserService {
             return Files.readAllBytes(emptyAvatar.toPath());
         }
     }
+
+
 }

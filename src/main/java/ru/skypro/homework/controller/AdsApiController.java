@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
@@ -28,15 +29,17 @@ public class AdsApiController{
     public AdsApiController(AdService adService) {
         this.adService = adService;
     }
+
     @PostMapping(value = "",
             produces = {"application/json"},
             consumes = {"multipart/form-data"})
     public ResponseEntity<AdDto> addAds(@Parameter(name = "properties", required = true)
+
                                         @Valid @RequestPart(value = "properties") CreateOrUpdateAdDto properties,
                                         @Parameter(name = "image", required = true)
                                         @RequestPart(value = "image") MultipartFile image,
                                         Authentication authentication) throws IOException {
-        return ResponseEntity.ok(adService.createAd(properties, image, authentication));
+
 
     }
 

@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,10 +17,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @Configuration
+
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
     //private final UserDetailsServiceImpl userDetailsService;
+
 
     private static final String[] AUTH_WHITELIST = {
             "/swagger-resources/**",
@@ -38,7 +41,9 @@ public class WebSecurityConfig {
                         authorization ->
                                 authorization
                                         .mvcMatchers(AUTH_WHITELIST).permitAll()
+
 //                                        // разрешили доступ к получению всех объявлений и отдельного объявления по ID для всех пользователей
+
 //                                        .mvcMatchers("/ads", "/ads/{id}").permitAll()
 //
 //                                        // разрешили доступ к добавлению объявления только для авторизованных пользователей
@@ -79,6 +84,7 @@ public class WebSecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }*/
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

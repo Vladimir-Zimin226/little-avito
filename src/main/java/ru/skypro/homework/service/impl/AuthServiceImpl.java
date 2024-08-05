@@ -1,19 +1,27 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.config.OurSecurityDetailsService;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.mapper.UserMapper;
+
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
+
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -31,11 +39,14 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
         return Objects.nonNull(userDetails) && passwordEncoder.matches(password, userDetails.getPassword()); }
 
+
     @Override
-    public boolean register(RegisterDto register) {
-        if (userService.userExists(register.getUsername())) {
+
+    public boolean register(RegisterDto registerDto) {
+        if (userRepository.findUserByEmailIgnoreCase(registerDto.getUsername()).isPresent()) {
             return false;
         }
+
         User user = userMapper.fromRegisterDto(register);
         user.setPassword(passwordEncoder.encode(register.getPassword()));
         userService.createUser(user);

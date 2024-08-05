@@ -6,6 +6,7 @@ import ru.skypro.homework.entity.User;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
+
     void deleteAllByAdId(Integer adId);
 
 }

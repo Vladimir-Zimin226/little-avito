@@ -15,6 +15,7 @@ import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exceptions.AdNotFoundException;
 import ru.skypro.homework.exceptions.UserNotFoundException;
+
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+
 public class AdServiceImpl implements AdService {
 
     private final AdRepository adRepository;
@@ -43,7 +45,9 @@ public class AdServiceImpl implements AdService {
         if (createOrUpdateAdDto.getPrice() < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
         }
+      
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         Ad ad = new Ad();
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(BigDecimal.valueOf(createOrUpdateAdDto.getPrice()));
@@ -59,7 +63,7 @@ public class AdServiceImpl implements AdService {
         Ad savedAd = adRepository.save(ad);
         return adMapper.toAdDto(savedAd);
     }
-    @Override
+
     public ExtendedAdDto getAdById(Integer id) {
         log.info("Finding ad by id");
         return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(AdNotFoundException::new);
@@ -68,11 +72,14 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdsDto getAllMyAds(Authentication authentication) {
         log.info("Finding all ads, ows to user: {}", authentication.getName());
+
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         AdsDto adsDto = new AdsDto();
         adsDto.setResults(user.getAds().stream().map(adMapper::toAdDto).collect(Collectors.toList()));
         return adsDto;
     }
+
     @Override
     public AdsDto getAllAds() {
         log.info("Finding all ads");
@@ -80,6 +87,7 @@ public class AdServiceImpl implements AdService {
         adsDto.setResults(adRepository.findAll().stream().map(adMapper::toAdDto).collect(Collectors.toList()));
         return adsDto;
     }
+
     @Transactional
     @Override
     public void removeAd(Integer id, Authentication authentication) {
@@ -89,6 +97,7 @@ public class AdServiceImpl implements AdService {
         adRepository.deleteById(id);
         imageService.deleteImage(ad.getAdImage().getId());
     }
+
     @Override
     public AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Integer id) {
         log.info("Requesting update ad by id");
@@ -109,6 +118,7 @@ public class AdServiceImpl implements AdService {
     public byte[] updateImage(MultipartFile file, Authentication authentication, Integer id) throws IOException {
         log.info("Updating ad image by its id, ows to user: {}", authentication.getName());
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         Ad updateAdImage = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         Integer previousImageId = updateAdImage.getAdImage().getId();
         imageService.deleteImage(previousImageId);
@@ -132,4 +142,5 @@ public class AdServiceImpl implements AdService {
         log.info("getting image of an AD with a ID: {}", adId);
         return imageService.getImage(adRepository.findById(adId).orElseThrow(AdNotFoundException::new).getAdImage().getId());
     }
+
 }
