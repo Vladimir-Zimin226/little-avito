@@ -1,15 +1,14 @@
 package ru.skypro.homework.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@EqualsAndHashCode
 @Entity
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "comments")
 public class Comment {
