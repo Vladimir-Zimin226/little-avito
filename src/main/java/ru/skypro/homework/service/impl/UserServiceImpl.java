@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -72,15 +74,15 @@ public class UserServiceImpl implements UserService {
     public void updateUserImage(MultipartFile file, Authentication authentication){
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(UserNotFoundException::new);
-        //log.info("User found: {}", user);
+        log.info("User found: {}", user);
         try {
             Image image = imageService.downloadImage(file);
             user.setUserPhoto(image);
-            //log.info("Image downloaded and set for user: {}", user.getId());
+            log.info("Image downloaded and set for user: {}", user.getId());
             userRepository.save(user);
-            //log.info("User updated successfully: {}", user.getId());
+            log.info("User updated successfully: {}", user.getId());
         } catch (IOException e) {
-            //log.error("Error occurred while updating user image", e);
+            log.error("Error occurred while updating user image", e);
             throw new RuntimeException("Failed to update user image", e);
         }
 
@@ -88,14 +90,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getAuthorizedUserDto(Authentication authentication) {
-        //log.info("Getting authorized-user information: {}", authentication.getName());
+        log.info("Getting authorized-user information: {}", authentication.getName());
         return userMapper.toUserDto(userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new));
     }
 
     @Transactional
     @Override
     public byte[] getUserImage(Integer userId) throws IOException {
-        //log.info("Request to getting image");
+        log.info("Request to getting image");
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         if (user.getUserPhoto() != null) {
             return user.getUserPhoto().getData();
