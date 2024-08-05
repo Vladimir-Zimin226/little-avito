@@ -1,148 +1,80 @@
 package ru.skypro.homework.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+import ru.skypro.homework.service.CommentService;
+import ru.skypro.homework.service.UserService;
 
-import javax.annotation.Generated;
 import javax.validation.Valid;
-import java.util.Optional;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("${openapi.aPIDocumentation.base-path:}")
+@RequiredArgsConstructor
 public class CommentsApiController {
 
-    private final NativeWebRequest request;
+    private final CommentService commentService;
+    private final UserService userService;
 
-    public CommentsApiController(NativeWebRequest request) {
-        this.request = request;
-    }
-
-
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.ofNullable(request);
-    }
-
-    @Operation(
-            operationId = "addComment",
-            summary = "Добавление комментария к объявлению",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentDto.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
     @PostMapping(
             value = "/ads/{id}/comments",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
     public ResponseEntity<CommentDto> addComment(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id,
-            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            @Parameter(name = "id", required = true) @PathVariable("id") Integer id,
+            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto, @NotNull Authentication authentication) {
+        return ResponseEntity.ok(commentService.addComment(id, createOrUpdateCommentDto, authentication));
     }
-
-    @Operation(
-            operationId = "deleteComment",
-            summary = "Удаление комментария",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(
             value = "/ads/{adId}/comments/{commentId}"
     )
     public ResponseEntity<Void> deleteComment(
-            @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
-            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            @Parameter(name = "adId",required = true) @PathVariable("adId") Integer adId,
+            @Parameter(name = "commentId", required = true) @PathVariable("commentId") Integer commentId) {
+        commentService.deleteComment(adId, commentId);
+        return ResponseEntity.ok().build();
     }
-
-    @Operation(
-            operationId = "getComments",
-            summary = "Получение комментариев объявления",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentsDto.class))
-                    }),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
     @GetMapping(
             value = "/ads/{id}/comments",
             produces = {"application/json"}
     )
     public ResponseEntity<CommentsDto> getComments(
-            @Parameter(name = "id", description = "", required = true) @PathVariable("id") Integer id) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            @Parameter(name = "id",required = true) @PathVariable("id") Integer id) {
+        return ResponseEntity.ok(commentService.getComments(id));
     }
 
-    @Operation(
-            operationId = "updateComment",
-            summary = "Обновление комментария",
-            tags = {"Комментарии"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = CommentDto.class))
-                    }),
-                    @ApiResponse(responseCode = "403", description = "Forbidden"),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "404", description = "Not found")
-            }
-    )
+
+    @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ADMIN')")
     @PatchMapping(
             value = "/ads/{adId}/comments/{commentId}",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
     public ResponseEntity<CommentDto> updateComment(
-            @Parameter(name = "adId", description = "", required = true) @PathVariable("adId") Integer adId,
-            @Parameter(name = "commentId", description = "", required = true) @PathVariable("commentId") Integer commentId,
-            @Parameter(name = "CreateOrUpdateCommentDto", description = "") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+            @Parameter(name = "adId", required = true) @PathVariable("adId") Integer adId,
+            @Parameter(name = "commentId",required = true) @PathVariable("commentId") Integer commentId,
+            @Parameter(name = "CreateOrUpdateCommentDto") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, createOrUpdateCommentDto));
+    }
+
+    @GetMapping(
+            value = "/comments/{id}/image",
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getCommentImage(@PathVariable Integer id) throws IOException {
+        log.info("Get comment image with id " + id);
+        return ResponseEntity.ok(commentService.getCommentImage(id));
     }
 }

@@ -8,12 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.service.AuthService;
 
-import java.util.Optional;
-import javax.annotation.Generated;
 import javax.validation.Valid;
 
 @RestController
@@ -22,13 +19,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class RegisterApiController{
 
-    private final NativeWebRequest request;
-
     private final AuthService authService;
-
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     @Operation(
             operationId = "register",

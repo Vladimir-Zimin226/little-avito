@@ -6,6 +6,7 @@ import org.mapstruct.ReportingPolicy;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Comment;
+import ru.skypro.homework.entity.Image;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -15,30 +16,56 @@ public interface CommentMapper {
 
     @Mapping(source = "pk", target = "id", ignore = true)
     @Mapping(source = "author", target = "author.id")
-    @Mapping(source = "authorImage", target = "author.userPhoto.id")
     @Mapping(source = "authorFirstName", target = "author.firstName")
+    @Mapping(target = "author.userPhoto.id", expression = "java(pathToImageFromDto(commentDto))")
     Comment fromCommentDto(CommentDto dto);
 
     @Mapping(source = "id", target = "pk")
     @Mapping(source = "author.id", target = "author")
-    @Mapping(source = "author.userPhoto.id", target = "authorImage")
+    @Mapping(target = "authorImage", expression = "java(imageMapperForDto(comment))")
     @Mapping(source = "author.firstName", target = "authorFirstName")
     CommentDto toCommentDto(Comment comment);
 
     CommentDto createCommentDtoFromComment(CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
+    default Integer pathToImageFromDto(CommentDto dto) {
+        String imagePath = dto.getAuthorImage();
+        if (imagePath == null || imagePath.isEmpty()) {
+            return null;
+        }
+        Image image = new Image();
+        try {
+            Integer id = extractIdFromPath(imagePath);
+            image.setId(id);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid image path: " + imagePath, e);
+        }
+        return image.getId();
+    }
+
+    private Integer extractIdFromPath(String path) {
+        try {
+            String[] parts = path.split("/");
+            return Integer.valueOf(parts[2]); // Получаем id из пути
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid path format: " + path, e);
+        }
+    }
+
+    default String imageMapperForDto(Comment comment) {
+        int id = comment.getId();
+        return "/comments/" + id + "/image";
+    }
+
     default String map(byte[] image) {
         return image != null ? new String(image) : null;
     }
-
     default byte[] map(String image) {
         return image != null ? image.getBytes() : null;
     }
-
     default LocalDateTime map(Long timestamp) {
         return timestamp != null ? LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC) : null;
     }
-
     default Long map(LocalDateTime dateTime) {
         return dateTime != null ? dateTime.toEpochSecond(ZoneOffset.UTC) : null;
     }

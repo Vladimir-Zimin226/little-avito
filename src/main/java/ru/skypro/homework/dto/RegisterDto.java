@@ -19,4 +19,3 @@ public class RegisterDto {
     private Role role;
 
 }
-
