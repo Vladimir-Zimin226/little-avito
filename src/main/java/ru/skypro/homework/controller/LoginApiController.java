@@ -2,6 +2,7 @@ package ru.skypro.homework.controller;
 
 
 import io.swagger.v3.oas.annotations.Parameter;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +24,12 @@ public class LoginApiController{
     }
 
 
+
     @PostMapping(
             value = "/login",
             consumes = {"application/json"}
     )
+  
     public ResponseEntity<Void> login(
             @Parameter(name = "LoginDto") @Valid @RequestBody(required = false) LoginDto loginDto
     ) {
@@ -35,6 +38,7 @@ public class LoginApiController{
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
 
     }
 }
