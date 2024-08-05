@@ -58,6 +58,7 @@ public interface CommentMapper {
         return "/comments/" + id + "/image";
     }
 
+
     default String map(byte[] image) {
         return image != null ? new String(image) : null;
     }

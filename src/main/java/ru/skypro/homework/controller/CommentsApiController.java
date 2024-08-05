@@ -3,6 +3,7 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,11 +15,12 @@ import ru.skypro.homework.service.CommentService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @RestController
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
-@RequestMapping("/ads")
+@RequestMapping("")
 public class CommentsApiController {
 
     public final CommentService commentService;
@@ -28,7 +30,7 @@ public class CommentsApiController {
     }
 
     @PostMapping(
-            value = "/{id}/comments",
+            value = "/ads/{id}/comments",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
@@ -41,7 +43,7 @@ public class CommentsApiController {
 
     @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping(
-            value = "/{adId}/comments/{commentId}"
+            value = "/ads/{adId}/comments/{commentId}"
     )
     public ResponseEntity<Void> deleteComment(
             @Parameter(name = "adId",required = true) @PathVariable("adId") Integer adId,
@@ -52,7 +54,7 @@ public class CommentsApiController {
 
 
     @GetMapping(
-            value = "/{id}/comments",
+            value = "/ads/{id}/comments",
             produces = {"application/json"}
     )
     public ResponseEntity<CommentsDto> getComments(
@@ -63,7 +65,7 @@ public class CommentsApiController {
 
     @PreAuthorize("@commentServiceImpl.getComment(#commentId).author.email.equals(authentication.name) or hasAuthority('ROLE_ADMIN')")
     @PatchMapping(
-            value = "/{adId}/comments/{commentId}",
+            value = "/ads/{adId}/comments/{commentId}",
             produces = {"application/json"},
             consumes = {"application/json"}
     )
@@ -73,4 +75,14 @@ public class CommentsApiController {
             @Parameter(name = "CreateOrUpdateCommentDto") @Valid @RequestBody(required = false) CreateOrUpdateCommentDto createOrUpdateCommentDto) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, createOrUpdateCommentDto));
     }
+
+    @GetMapping(
+            value = "comments/{id}/image",
+            produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
+        log.info("Get user image with id" + id);
+        return ResponseEntity.ok(commentService.getUserImage(id));
+    }
+
+
 }

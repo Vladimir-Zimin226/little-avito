@@ -2,6 +2,7 @@ package ru.skypro.homework.dto;
 
 
 import lombok.Data;
+import ru.skypro.homework.entity.Role;
 
 @Data
 public class UserDto {
@@ -18,7 +19,7 @@ public class UserDto {
 
     private String image;
 
-    private RoleDto roleDto;
+    private Role role;
 
 }
 

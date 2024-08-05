@@ -13,12 +13,16 @@ import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.exception.CommentNotFoundException;
+import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -99,5 +103,17 @@ public class CommentServiceImpl implements CommentService {
     public Comment getComment(Integer commentId) {
         log.info("Getting comment by its id: {}", commentId);
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+    }
+
+    @Override
+    public byte[] getUserImage(Integer commentId) throws IOException {
+        log.info("Request to getting image");
+        Comment comment = commentRepository.findById(commentId).orElseThrow(UserNotFoundException::new);
+        if (comment.getAuthor() != null) {
+            return comment.getAuthor().getUserPhoto().getData();
+        } else {
+            File emptyAvatar = new File("src/main/resources/defaultPhoto/6700.jpg");
+            return Files.readAllBytes(emptyAvatar.toPath());
+        }
     }
 }

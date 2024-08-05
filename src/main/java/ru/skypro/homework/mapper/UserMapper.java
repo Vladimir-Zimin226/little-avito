@@ -14,7 +14,6 @@ public interface UserMapper {
     UserDto toUserDto(User user);
 
     @Mapping(source = "pk", target = "id", ignore = true)
-    @Mapping(source = "roleDto", target = "role", defaultValue = "USER")
     @Mapping(target = "userPhoto.id", expression = "java(pathToImage(userDto))")
     User fromUserDto(UserDto dto);
 
@@ -26,7 +25,6 @@ public interface UserMapper {
 
     User createUserFromDto(UpdateUserDto updateUserDto);
 
-    @Mapping(source = "role", target = "roleDto", defaultValue = "USER")
     SecurityDto toSecurityDto(User user);
 
     default String imageMapper(User user){
