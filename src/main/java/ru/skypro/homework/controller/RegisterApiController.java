@@ -1,7 +1,9 @@
 package ru.skypro.homework.controller;
 
 
+
 import io.swagger.v3.oas.annotations.Parameter;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import javax.validation.Valid;
 public class RegisterApiController{
 
     private final AuthService authService;
+
 
     public RegisterApiController(AuthService authService) {
         this.authService = authService;
@@ -35,6 +38,7 @@ public class RegisterApiController{
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+
 
     }
 }

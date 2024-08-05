@@ -3,6 +3,7 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +14,6 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
-
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -22,6 +22,7 @@ import java.io.IOException;
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
 public class UsersApiController{
+
 
     private final UserService userService;
 
@@ -39,6 +40,7 @@ public class UsersApiController{
     }
 
 
+
     @PostMapping(
             value = "/set_password",
             consumes = { "application/json" }
@@ -51,10 +53,12 @@ public class UsersApiController{
 
 
     @PatchMapping(
+
             value = "/me",
             produces = { "application/json" },
             consumes = { "application/json" }
     )
+
     public ResponseEntity<UserDto> updateUser(
             @Parameter(name = "UpdateUserDto") @Valid @RequestBody(required = false) UpdateUserDto updateUserDto, Authentication authentication) {
         return ResponseEntity.ok(userService.updateUserDto(updateUserDto, authentication));

@@ -1,5 +1,6 @@
 package ru.skypro.homework.service.impl;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -95,5 +96,6 @@ public class UserServiceImpl implements UserService {
             return Files.readAllBytes(emptyAvatar.toPath());
         }
     }
+
 
 }
