@@ -21,12 +21,18 @@ public class RegisterApiController{
     private final AuthService authService;
 
 
-    public RegisterApiController(AuthService authService) {
-        this.authService = authService;
-    }
+    @Operation(
+            operationId = "register",
+            summary = "Регистрация пользователя",
+            tags = {"Регистрация"},
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.POST,
 
-
-    @PostMapping(
             value = "/register",
             consumes = {"application/json"}
     )

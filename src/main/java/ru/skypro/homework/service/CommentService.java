@@ -6,6 +6,8 @@ import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Comment;
 
+import java.io.IOException;
+
 public interface CommentService {
 
     CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createOrUpdateCommentDto, Authentication authentication);
@@ -19,4 +21,7 @@ public interface CommentService {
     CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
     Comment getComment(Integer commentId);
+
+    byte[] getCommentImage(Integer commentId) throws IOException;
+
 }

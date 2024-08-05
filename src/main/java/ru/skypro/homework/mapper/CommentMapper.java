@@ -61,15 +61,12 @@ public interface CommentMapper {
     default String map(byte[] image) {
         return image != null ? new String(image) : null;
     }
-
     default byte[] map(String image) {
         return image != null ? image.getBytes() : null;
     }
-
     default LocalDateTime map(Long timestamp) {
         return timestamp != null ? LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC) : null;
     }
-
     default Long map(LocalDateTime dateTime) {
         return dateTime != null ? dateTime.toEpochSecond(ZoneOffset.UTC) : null;
     }

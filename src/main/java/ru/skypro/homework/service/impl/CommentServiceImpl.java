@@ -8,16 +8,21 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
-import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Ad;
+import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.exception.AdNotFoundException;
-import ru.skypro.homework.exception.CommentNotFoundException;
+import ru.skypro.homework.exceptions.AdNotFoundException;
+import ru.skypro.homework.exceptions.CommentNotFoundException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.mapper.CommentMapper;
-import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +48,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(createOrUpdateCommentDto.getText());
         comment.setCreatedAt(LocalDateTime.now());
 
-        User currentUser = userRepository.findUserByEmailIgnoreCase(authentication.getName())
+        User currentUser = userRepository.findByEmail(authentication.getName())
+
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         comment.setAuthor(currentUser);
 
@@ -100,4 +106,29 @@ public class CommentServiceImpl implements CommentService {
         log.info("Getting comment by its id: {}", commentId);
         return commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
     }
+
+    @Override
+    public byte[] getCommentImage(Integer commentId) throws IOException {
+        log.info("Request to getting comment image");
+
+        // Найти комментарий по id
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(CommentNotFoundException::new);
+
+        // Получить автора комментария
+        User author = comment.getAuthor();
+        if (author == null) {
+            throw new UserNotFoundException();
+        }
+
+        if (author.getUserPhoto() != null) {
+            // Вернуть фотографию автора
+            return author.getUserPhoto().getData();
+        } else {
+            // Вернуть изображение по умолчанию
+            File emptyAvatar = new File("src/main/resources/defaultPhoto/6700.jpg");
+            return Files.readAllBytes(emptyAvatar.toPath());
+        }
+    }
 }
+

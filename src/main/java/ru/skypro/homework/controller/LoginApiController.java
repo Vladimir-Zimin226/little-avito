@@ -1,7 +1,10 @@
 package ru.skypro.homework.controller;
 
 
-import io.swagger.v3.oas.annotations.Parameter;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,13 +22,19 @@ public class LoginApiController{
 
     private final AuthService authService;
 
-    public LoginApiController(AuthService authService) {
-        this.authService = authService;
-    }
 
+    @Operation(
+            operationId = "login",
+            summary = "Авторизация пользователя",
+            tags = {"Авторизация"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.POST,
 
-
-    @PostMapping(
             value = "/login",
             consumes = {"application/json"}
     )
