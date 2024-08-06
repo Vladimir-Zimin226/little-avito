@@ -14,6 +14,9 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
+
+import java.io.IOException;
+import java.util.Optional;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -21,7 +24,9 @@ import java.io.IOException;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping("/users")
-public class UsersApiController{
+
+@RequiredArgsConstructor
+public class UsersApiController {
 
 
     private final UserService userService;
@@ -30,9 +35,23 @@ public class UsersApiController{
         this.userService = userService;
     }
 
-    @GetMapping(
+
+    @Operation(
+            operationId = "getUser",
+            summary = "Получение информации об авторизованном пользователе",
+            tags = {"Пользователи"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.GET,
             value = "/me",
-            produces = { "application/json" }
+            produces = {"application/json"}
+
     )
     public ResponseEntity<UserDto> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getAuthorizedUserDto(authentication));
@@ -40,23 +59,44 @@ public class UsersApiController{
     }
 
 
-
-    @PostMapping(
-            value = "/set_password",
-            consumes = { "application/json" }
+    @Operation(
+            operationId = "setPassword",
+            summary = "Обновление пароля",
+            tags = {"Пользователи"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            }
     )
-    public ResponseEntity<Void> setPassword(
-            @Parameter(name = "NewPasswordDto") @Valid @RequestBody(required = false) NewPasswordDto newPasswordDto, Authentication authentication) {
-        userService.newPasswordDto(newPasswordDto,authentication);
+    @RequestMapping(
+            method = RequestMethod.POST,
+
+            value = "/set_password",
+            consumes = {"application/json"}
+    )
+
+    public ResponseEntity<NewPasswordDto> setPassword(@Valid @RequestBody NewPasswordDto dto, Authentication authentication) {
+        userService.updatePassword(dto, authentication.getName());
         return ResponseEntity.ok().build();
     }
 
-
-    @PatchMapping(
+    @Operation(
+            operationId = "updateUserDto",
+            summary = "Обновление информации об авторизованном пользователе",
+            tags = {"Пользователи"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = UpdateUserDto.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.PATCH,
 
             value = "/me",
-            produces = { "application/json" },
-            consumes = { "application/json" }
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
 
     public ResponseEntity<UserDto> updateUser(
@@ -65,10 +105,20 @@ public class UsersApiController{
 
     }
 
-
-    @PatchMapping(
+    @Operation(
+            operationId = "updateUserImage",
+            summary = "Обновление аватара авторизованного пользователя",
+            tags = {"Пользователи"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.PATCH,
             value = "/me/image",
-            consumes = { "multipart/form-data" }
+            consumes = {"multipart/form-data"}
+
     )
     public ResponseEntity<Void> updateUserImage(
             @Parameter(name = "image",required = true) @RequestPart(value = "image", required = true) MultipartFile image, Authentication authentication) throws IOException {

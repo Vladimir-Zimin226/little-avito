@@ -8,15 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
-import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Ad;
+import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exception.AdNotFoundException;
 import ru.skypro.homework.exception.CommentNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
+
 import ru.skypro.homework.mapper.CommentMapper;
-import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
@@ -47,7 +48,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setText(createOrUpdateCommentDto.getText());
         comment.setCreatedAt(LocalDateTime.now());
 
-        User currentUser = userRepository.findUserByEmailIgnoreCase(authentication.getName())
+        User currentUser = userRepository.findByEmail(authentication.getName())
+
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         comment.setAuthor(currentUser);
 
@@ -117,3 +119,4 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 }
+

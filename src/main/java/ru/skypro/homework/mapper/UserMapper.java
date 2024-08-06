@@ -2,8 +2,13 @@ package ru.skypro.homework.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
-import ru.skypro.homework.dto.*;
+import ru.skypro.homework.dto.LoginDto;
+import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.dto.UpdateUserDto;
+import ru.skypro.homework.dto.UserDto;
+
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 
@@ -23,9 +28,11 @@ public interface UserMapper {
     @Mapping(source = "username", target = "email")
     User fromLoginDto(LoginDto loginDto);
 
-    User createUserFromDto(UpdateUserDto updateUserDto);
+    @Mapping(target = "id", ignore = true)
+    void updateUserFromDto(UpdateUserDto updateUserDto, @MappingTarget User user);
 
     SecurityDto toSecurityDto(User user);
+
 
     default String imageMapper(User user){
         return "/users/"+ user.getId() + "/image";
@@ -58,7 +65,6 @@ public interface UserMapper {
     default String map(byte[] image) {
         return image != null ? new String(image) : null;
     }
-
     default byte[] map(String image) {
         return image != null ? image.getBytes() : null;
     }

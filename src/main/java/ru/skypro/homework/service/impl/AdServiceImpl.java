@@ -6,12 +6,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.*;
+import ru.skypro.homework.dto.AdDto;
+import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.exception.AdNotFoundException;
-import ru.skypro.homework.exception.UserNotFoundException;
+import ru.skypro.homework.exceptions.AdNotFoundException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
+
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -24,8 +28,9 @@ import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+
 public class AdServiceImpl implements AdService {
 
     private final AdRepository adRepository;
@@ -40,7 +45,9 @@ public class AdServiceImpl implements AdService {
         if (createOrUpdateAdDto.getPrice() < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
         }
-        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
+      
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         Ad ad = new Ad();
         ad.setTitle(createOrUpdateAdDto.getTitle());
         ad.setPrice(BigDecimal.valueOf(createOrUpdateAdDto.getPrice()));
@@ -57,7 +64,6 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(savedAd);
     }
 
-    @Override
     public ExtendedAdDto getAdById(Integer id) {
         log.info("Finding ad by id");
         return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(AdNotFoundException::new);
@@ -66,7 +72,9 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdsDto getAllMyAds(Authentication authentication) {
         log.info("Finding all ads, ows to user: {}", authentication.getName());
-        User user = userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         AdsDto adsDto = new AdsDto();
         adsDto.setResults(user.getAds().stream().map(adMapper::toAdDto).collect(Collectors.toList()));
         return adsDto;
@@ -107,8 +115,10 @@ public class AdServiceImpl implements AdService {
 
     @Transactional
     @Override
-    public byte[] updateImage(MultipartFile file, Authentication authentication, Integer id){
+    public byte[] updateImage(MultipartFile file, Authentication authentication, Integer id) throws IOException {
         log.info("Updating ad image by its id, ows to user: {}", authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(UserNotFoundException::new);
+
         Ad updateAdImage = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
         Integer previousImageId = updateAdImage.getAdImage().getId();
         imageService.deleteImage(previousImageId);

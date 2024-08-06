@@ -14,7 +14,5 @@ public class CreateOrUpdateAdDto {
     private Integer price;
 
     private String description;
-
-
 }
 

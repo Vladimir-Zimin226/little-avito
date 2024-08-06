@@ -1,13 +1,11 @@
 package ru.skypro.homework.entity;
 
-import lombok.*;
-import org.hibernate.annotations.Type;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @Entity
 @NoArgsConstructor
 @Table(name = "images")

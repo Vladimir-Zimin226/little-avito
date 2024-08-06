@@ -23,4 +23,5 @@ public interface CommentService {
     Comment getComment(Integer commentId);
 
     byte[] getUserImage(Integer commentId) throws IOException;
+
 }

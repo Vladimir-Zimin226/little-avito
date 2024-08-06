@@ -1,6 +1,5 @@
 package ru.skypro.homework.config;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,16 +11,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.skypro.homework.security.UserDetailsServiceImpl;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @Configuration
-@EnableWebSecurity
+
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final OurSecurityDetailsService ourSecurityDetailsService;
+    //private final UserDetailsServiceImpl userDetailsService;
 
 
     private static final String[] AUTH_WHITELIST = {
@@ -41,7 +41,9 @@ public class WebSecurityConfig {
                         authorization ->
                                 authorization
                                         .mvcMatchers(AUTH_WHITELIST).permitAll()
-//                                        // разрещили доступ к получению всех объявлений и отдельного объявления по ID для всех пользователей
+
+//                                        // разрешили доступ к получению всех объявлений и отдельного объявления по ID для всех пользователей
+
 //                                        .mvcMatchers("/ads", "/ads/{id}").permitAll()
 //
 //                                        // разрешили доступ к добавлению объявления только для авторизованных пользователей
@@ -75,18 +77,17 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-
-    @Bean
+    /*@Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(ourSecurityDetailsService);
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
-    }
+    }*/
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
