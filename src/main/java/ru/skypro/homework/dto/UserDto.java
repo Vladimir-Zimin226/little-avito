@@ -1,14 +1,25 @@
 package ru.skypro.homework.dto;
 
+
 import lombok.Data;
+import ru.skypro.homework.entity.Role;
 
 @Data
-public class Register {
+public class UserDto {
 
-    private String username;
-    private String password;
+    private Integer pk;
+
+    private String email;
+
     private String firstName;
+
     private String lastName;
+
     private String phone;
+
+    private String image;
+
     private Role role;
+
 }
+

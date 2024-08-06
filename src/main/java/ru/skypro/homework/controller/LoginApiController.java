@@ -1,0 +1,53 @@
+package ru.skypro.homework.controller;
+
+
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.dto.LoginDto;
+import ru.skypro.homework.service.AuthService;
+
+import javax.validation.Valid;
+
+@RestController
+@Slf4j
+@CrossOrigin(value = "http://localhost:3000")
+public class LoginApiController{
+
+    private final AuthService authService;
+
+
+    @Operation(
+            operationId = "login",
+            summary = "Авторизация пользователя",
+            tags = {"Авторизация"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.POST,
+
+            value = "/login",
+            consumes = {"application/json"}
+    )
+  
+    public ResponseEntity<Void> login(
+            @Parameter(name = "LoginDto") @Valid @RequestBody(required = false) LoginDto loginDto
+    ) {
+        if (authService.login(loginDto.getUsername(), loginDto.getPassword())) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+
+    }
+}
