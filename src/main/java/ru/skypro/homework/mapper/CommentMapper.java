@@ -9,7 +9,9 @@ import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -68,10 +70,17 @@ public interface CommentMapper {
     }
 
     default LocalDateTime map(Long timestamp) {
-        return timestamp != null ? LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.UTC) : null;
+        if (timestamp == null) {
+            return null;
+        }
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        ZoneId zoneId = ZoneId.systemDefault();
+        return instant.atZone(zoneId).toLocalDateTime();
     }
 
     default Long map(LocalDateTime dateTime) {
-        return dateTime != null ? dateTime.toEpochSecond(ZoneOffset.UTC) : null;
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant instant = dateTime.atZone(zoneId).toInstant();
+        return instant.toEpochMilli();
     }
 }

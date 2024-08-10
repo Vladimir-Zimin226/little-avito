@@ -17,7 +17,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 

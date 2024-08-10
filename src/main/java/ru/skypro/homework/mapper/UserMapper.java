@@ -9,11 +9,9 @@ import ru.skypro.homework.entity.User;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
-    @Mapping(source = "id", target = "pk")
     @Mapping(target = "image", expression = "java(imageMapper(user))")
     UserDto toUserDto(User user);
 
-    @Mapping(source = "pk", target = "id", ignore = true)
     @Mapping(target = "userPhoto.id", expression = "java(pathToImage(userDto))")
     User fromUserDto(UserDto dto);
 

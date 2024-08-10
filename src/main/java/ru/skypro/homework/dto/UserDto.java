@@ -7,7 +7,7 @@ import ru.skypro.homework.entity.Role;
 @Data
 public class UserDto {
 
-    private Integer pk;
+    private Integer id;
 
     private String email;
 

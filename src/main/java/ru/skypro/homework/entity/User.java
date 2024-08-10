@@ -33,9 +33,6 @@ public class User {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @OneToOne
     @JoinColumn(name = "image_id")
     private Image userPhoto;
