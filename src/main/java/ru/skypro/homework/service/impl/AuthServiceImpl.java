@@ -1,47 +1,63 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.security.core.userdetails.User;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.config.OurSecurityDetailsService;
+import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.entity.User;
+import ru.skypro.homework.mapper.UserMapper;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
+/**
+ * Реализация сервиса аутентификации и регистрации пользователей.
+ * <p>
+ * Содержит методы для входа пользователя в систему и регистрации нового пользователя.
+ * </p>
+ */
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
-    private final UserDetailsManager manager;
+    private final OurSecurityDetailsService ourSecurityDetailsService;
     private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public AuthServiceImpl(UserDetailsManager manager,
-                           PasswordEncoder passwordEncoder) {
-        this.manager = manager;
-        this.encoder = passwordEncoder;
-    }
-
+    /**
+     * Выполняет вход пользователя в систему, проверяя соответствие предоставленных данных.
+     *
+     * @param userName имя пользователя.
+     * @param password пароль пользователя.
+     * @return {@code true}, если пароль соответствует сохраненному паролю пользователя; {@code false} в противном случае.
+     */
     @Override
     public boolean login(String userName, String password) {
-        if (!manager.userExists(userName)) {
-            return false;
-        }
-        UserDetails userDetails = manager.loadUserByUsername(userName);
+        UserDetails userDetails = ourSecurityDetailsService.loadUserByUsername(userName);
         return encoder.matches(password, userDetails.getPassword());
     }
 
+    /**
+     * Регистрирует нового пользователя в системе.
+     * <p>
+     * Проверяет наличие пользователя с таким же email в базе данных. Если пользователь уже существует, регистрация не выполняется.
+     * </p>
+     *
+     * @param registerDto данные для регистрации пользователя.
+     * @return {@code true}, если регистрация прошла успешно; {@code false}, если пользователь с таким email уже существует.
+     */
     @Override
-    public boolean register(Register register) {
-        if (manager.userExists(register.getUsername())) {
+    public boolean register(RegisterDto registerDto) {
+        if (userRepository.findUserByEmailIgnoreCase(registerDto.getUsername()).isPresent()) {
             return false;
         }
-        manager.createUser(
-                User.builder()
-                        .passwordEncoder(this.encoder::encode)
-                        .password(register.getPassword())
-                        .username(register.getUsername())
-                        .roles(register.getRole().name())
-                        .build());
+        User registerUser = userMapper.fromRegisterDto(registerDto);
+        registerUser.setPassword(encoder.encode(registerUser.getPassword()));
+        userRepository.save(registerUser);
         return true;
     }
-
 }
