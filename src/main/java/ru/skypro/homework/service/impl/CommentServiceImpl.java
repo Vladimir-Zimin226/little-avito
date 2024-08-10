@@ -135,8 +135,6 @@ public class CommentServiceImpl implements CommentService {
         log.info("Updating comment in ad by its id: {}", commentId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
         comment.setText(createOrUpdateCommentDto.getText());
-        Ad ad = adRepository.findById(adId).orElseThrow(AdNotFoundException::new);
-        ad.getComments().add(commentId, comment);
         Comment updatedComment = commentRepository.save(comment);
         return commentMapper.toCommentDto(updatedComment);
     }
