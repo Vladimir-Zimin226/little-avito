@@ -44,8 +44,7 @@ You will then have access to http://localhost:3000 and the Swagger UI http://loc
 - Lombok;
 - PostgreSQL;
 - Liquibase;
-- Mapstruct;
-- h2database for tests.
+- Mapstruct.
 
 ## Note
 - The functionality of the backend part of the application was developed for the ready OpenAPI specification https://github.com/skygroundwater/OnlineResellingProject/blob/release/openapi.yaml.
