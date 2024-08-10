@@ -1,6 +1,5 @@
 package ru.skypro.homework.service.impl;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -23,7 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-
+/**
+ * Реализация сервиса для управления пользователями.
+ * <p>
+ * Предоставляет методы для получения информации о пользователе, обновления данных пользователя,
+ * смены пароля и управления изображением пользователя.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,13 +39,26 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
     private final ImageService imageService;
 
-
+    /**
+     * Получает информацию о текущем авторизованном пользователе.
+     *
+     * @param authentication информация о текущем пользователе.
+     * @return DTO текущего авторизованного пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Override
     public UserDto getAuthorizedUserDto(Authentication authentication) {
         log.info("Getting authorized-user information: {}", authentication.getName());
         return mapper.toUserDto(userRepository.findUserByEmailIgnoreCase(authentication.getName()).orElseThrow(UserNotFoundException::new));
     }
 
+    /**
+     * Обновляет пароль пользователя.
+     *
+     * @param newPasswordDto DTO с новыми данными пароля.
+     * @param authentication информация о текущем пользователе.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Override
     public void newPasswordDto(NewPasswordDto newPasswordDto, Authentication authentication) {
         log.info("Updating password for user: {}", authentication.getName());
@@ -50,6 +68,14 @@ public class UserServiceImpl implements UserService {
         mapper.toUserDto(user);
     }
 
+    /**
+     * Обновляет информацию о пользователе.
+     *
+     * @param updateUserDto DTO с новыми данными пользователя.
+     * @param authentication информация о текущем пользователе.
+     * @return DTO обновленного пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Override
     public UserDto updateUserDto(UpdateUserDto updateUserDto, Authentication authentication) {
         log.info("Updating user information for user:{}", authentication.getName());
@@ -62,10 +88,17 @@ public class UserServiceImpl implements UserService {
         return mapper.toUserDto(user);
     }
 
-
+    /**
+     * Обновляет изображение пользователя.
+     *
+     * @param file файл изображения, которое нужно загрузить.
+     * @param authentication информация о текущем пользователе.
+     * @throws UserNotFoundException если пользователь не найден.
+     * @throws RuntimeException если произошла ошибка при загрузке изображения.
+     */
     @Transactional
     @Override
-    public void updateUserImage(MultipartFile file, Authentication authentication){
+    public void updateUserImage(MultipartFile file, Authentication authentication) {
         User user = userRepository.findUserByEmailIgnoreCase(authentication.getName())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -81,9 +114,16 @@ public class UserServiceImpl implements UserService {
             log.error("Error occurred while updating user image", e);
             throw new RuntimeException("Failed to update user image", e);
         }
-
     }
 
+    /**
+     * Получает изображение пользователя по его идентификатору.
+     *
+     * @param userId идентификатор пользователя.
+     * @return массив байтов, представляющий изображение пользователя.
+     * @throws IOException если произошла ошибка при чтении изображения.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Transactional
     @Override
     public byte[] getUserImage(Integer userId) throws IOException {
@@ -96,6 +136,4 @@ public class UserServiceImpl implements UserService {
             return Files.readAllBytes(emptyAvatar.toPath());
         }
     }
-
-
 }

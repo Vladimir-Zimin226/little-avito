@@ -34,6 +34,17 @@ public class AdServiceImpl implements AdService {
     private final UserRepository userRepository;
     private final CommentService commentService;
 
+    /**
+     * Создает новое объявление.
+     *
+     * @param createOrUpdateAdDto данные объявления.
+     * @param file изображение объявления.
+     * @param authentication информация о текущем пользователе.
+     * @return DTO созданного объявления.
+     * @throws IllegalArgumentException если цена отрицательная.
+     * @throws RuntimeException если не удалось загрузить изображение.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Override
     public AdDto createAd(CreateOrUpdateAdDto createOrUpdateAdDto, MultipartFile file, Authentication authentication) {
         log.info("Creating ad by user: {}", authentication.getName());
@@ -57,12 +68,26 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(savedAd);
     }
 
+    /**
+     * Получает объявление по его идентификатору.
+     *
+     * @param id идентификатор объявления.
+     * @return DTO объявления.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Override
     public ExtendedAdDto getAdById(Integer id) {
         log.info("Finding ad by id");
         return adRepository.findById(id).map(adMapper::toExtendedAdDto).orElseThrow(AdNotFoundException::new);
     }
 
+    /**
+     * Получает все объявления текущего пользователя.
+     *
+     * @param authentication информация о текущем пользователе.
+     * @return DTO всех объявлений пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     @Override
     public AdsDto getAllMyAds(Authentication authentication) {
         log.info("Finding all ads, ows to user: {}", authentication.getName());
@@ -72,6 +97,11 @@ public class AdServiceImpl implements AdService {
         return adsDto;
     }
 
+    /**
+     * Получает все объявления.
+     *
+     * @return DTO всех объявлений.
+     */
     @Override
     public AdsDto getAllAds() {
         log.info("Finding all ads");
@@ -80,6 +110,13 @@ public class AdServiceImpl implements AdService {
         return adsDto;
     }
 
+    /**
+     * Удаляет объявление по его идентификатору.
+     *
+     * @param id идентификатор объявления.
+     * @param authentication информация о текущем пользователе.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Transactional
     @Override
     public void removeAd(Integer id, Authentication authentication) {
@@ -90,6 +127,16 @@ public class AdServiceImpl implements AdService {
         imageService.deleteImage(ad.getAdImage().getId());
     }
 
+    /**
+     * Обновляет объявление.
+     *
+     * @param createOrUpdateAdDto новые данные объявления.
+     * @param authentication информация о текущем пользователе.
+     * @param id идентификатор объявления для обновления.
+     * @return DTO обновленного объявления.
+     * @throws IllegalArgumentException если цена отрицательная.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Override
     public AdDto updateAd(CreateOrUpdateAdDto createOrUpdateAdDto, Authentication authentication, Integer id) {
         log.info("Requesting update ad by id");
@@ -105,6 +152,16 @@ public class AdServiceImpl implements AdService {
         return adMapper.toAdDto(ad);
     }
 
+    /**
+     * Обновляет изображение объявления.
+     *
+     * @param file новое изображение объявления.
+     * @param authentication информация о текущем пользователе.
+     * @param id идентификатор объявления для обновления.
+     * @return пустой массив байтов.
+     * @throws IOException если не удалось загрузить изображение.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Transactional
     @Override
     public byte[] updateImage(MultipartFile file, Authentication authentication, Integer id){
@@ -121,16 +178,29 @@ public class AdServiceImpl implements AdService {
         return new byte[0];
     }
 
+    /**
+     * Получает объявление по его идентификатору.
+     *
+     * @param id идентификатор объявления.
+     * @return объявление.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Override
     public Ad getAd(Integer id) {
         return adRepository.findById(id).orElseThrow(AdNotFoundException::new);
     }
 
+    /**
+     * Получает изображение объявления.
+     *
+     * @param adId идентификатор объявления.
+     * @return изображение в виде массива байтов.
+     * @throws AdNotFoundException если объявление не найдено.
+     */
     @Transactional
     @Override
     public byte[] getAdImage(Integer adId) {
         log.info("getting image of an AD with a ID: {}", adId);
         return imageService.getImage(adRepository.findById(adId).orElseThrow(AdNotFoundException::new).getAdImage().getId());
     }
-
 }
